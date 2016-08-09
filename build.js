@@ -37,7 +37,7 @@ function loadSpeciesInfo(callback) {
 function loadDatasetInfo(cb) {
   const datasets = {};
 
-  async.eachSeries(fs.readdirSync('./data/abundances'), function (d, callback) {
+  async.eachSeries(fs.readdirSync('./data/abundances'), function(d, callback) {
     console.log(`reading ${d}`);
     const dataset = { filename: d }
     const species = parseInt(d.split('-')[0])
@@ -92,11 +92,22 @@ function loadDatasetInfo(cb) {
   });
 }
 
-function loadGenomeSources(cb) {
-  "use strict";
+function loadGenomeSources(callback) {
+  const input = fs.createReadStream('./data/eggnog4_genome_linkout.txt');
+  const rl = readline.createInterface({ input })
+  const sources = {}
 
+  rl.on('close', function() {
+    callback(sources);
+  });
+
+  rl.on('line', function(line) {
+    const rec = line.split('\t');
+    if (rec.length > 4) {
+      sources[parseInt(rec[1])] = `<a href='${rec[4]}'>${rec[2]}</a>`;
+    }
+  });
 }
-
 
 // loadSpeciesInfo(function(s) {
 //   console.log(s);
@@ -104,6 +115,10 @@ function loadGenomeSources(cb) {
 
 //
 // loadDatasetInfo(function(s) {
+//   console.log(s[882]);
+// });
+
+// loadGenomeSources(function(s) {
 //   console.log(s[882]);
 // });
 
