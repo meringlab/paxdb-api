@@ -36,13 +36,16 @@ function loadSpeciesInfo(callback) {
 
 function loadDatasetInfo(cb) {
   const datasets = {};
-
+  const proteinsCovered = {}
   async.eachSeries(fs.readdirSync('./data/abundances'), function(d, callback) {
     console.log(`reading ${d}`);
     const dataset = { filename: d }
     const species = parseInt(d.split('-')[0])
     if (!(species in datasets)) {
       datasets[species] = []
+    }
+    if (!(species in proteinsCovered)) {
+      proteinsCovered[species] = new Set();
     }
     datasets[species].push(dataset);
     const input = fs.createReadStream(`./data/abundances/${d}`);
@@ -53,42 +56,48 @@ function loadDatasetInfo(cb) {
 
     rl.on('line', function(line) {
       if (!line.startsWith("#")) {
-        rl.close();
-        return;
-      }
-      switch (line.split(':')[0].trim()) {
-        case '#id':
-          dataset.id = parseInt(line.split(':')[1].trim());
-          break;
-        case '#name':
-          dataset.name = line.split(':')[1].trim();
-          break;
-        case '#score':
-          dataset.score = parseFloat(line.split(':')[1].trim());
-          break;
-        case '#weight':
-          dataset.weight = line.split(':')[1].trim();
-          break;
-        case '#description':
-          dataset.description = line.replace(/#\W*description:\W*/, '').trim();
-          break;
-        case '#organ':
-          dataset.organ = line.split(':')[1].trim();
-          break;
-        case '#integrated':
-          dataset.integrated = line.split(':')[1].trim() === 'true';
-          break;
-        case '#coverage':
-          dataset.coverage = parseFloat(line.split(':')[1].trim());
-          break;
-        case '#publication_year':
-          dataset.publication_year = parseInt(line.split(':')[1].trim());
-          break;
+        var rec = line.split('\t');
+        if (rec.length > 1) {
+          proteinsCovered[species].add(rec[0])
+        }
+      } else {
+        switch (line.split(':')[0].trim()) {
+          case '#id':
+            dataset.id = parseInt(line.split(':')[1].trim());
+            break;
+          case '#name':
+            dataset.name = line.split(':')[1].trim();
+            break;
+          case '#score':
+            dataset.score = parseFloat(line.split(':')[1].trim());
+            break;
+          case '#weight':
+            dataset.weight = line.split(':')[1].trim();
+            break;
+          case '#description':
+            dataset.description = line.replace(/#\W*description:\W*/, '').trim();
+            break;
+          case '#organ':
+            dataset.organ = line.split(':')[1].trim();
+            break;
+          case '#integrated':
+            dataset.integrated = line.split(':')[1].trim() === 'true';
+            break;
+          case '#coverage':
+            dataset.coverage = parseFloat(line.split(':')[1].trim());
+            break;
+          case '#publication_year':
+            dataset.publication_year = parseInt(line.split(':')[1].trim());
+            break;
+        }
       }
     })
   }, function(err) {
     if (err) throw err;
-    cb(datasets);
+    speciesIds.forEach(function(id) {
+      proteinsCovered[id] = proteinsCovered[id].size
+    })
+    cb(datasets, proteinsCovered);
   });
 }
 
@@ -113,10 +122,11 @@ function loadGenomeSources(callback) {
 //   console.log(s);
 // });
 
-//
-// loadDatasetInfo(function(s) {
-//   console.log(s[882]);
-// });
+
+loadDatasetInfo(function(datasets, proteinsCovered) {
+  console.log(datasets[882]);
+  console.log(proteinsCovered[882]);
+});
 
 // loadGenomeSources(function(s) {
 //   console.log(s[882]);
