@@ -1,0 +1,48 @@
+{
+  "name": "api-species",
+  "version": "0.0.1",
+  "author": "Milan Simonovic <milan.simonovic@uzh.ch>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paxdb/api-species"
+  },
+  "bugs": {
+    "url": "https://github.com/paxdb/api-species/issues"
+  },
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "mocha test/*.js integration_test/*.js",
+    "lint": "./node_modules/eslint/bin/eslint.js app.js bin/ lib/ routes/"
+  },
+  "dependencies": {
+    "async": "^2.0.1",
+    "babel-eslint": "^6.0.2",
+    "body-parser": "~1.15.1",
+    "bunyan": "~1.8",
+    "bunyan-emailstream": "^1.0.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "ejs": "~2.4.1",
+    "eslint": "^2.7.0",
+    "eslint-config-airbnb": "^6.2.0",
+    "eslint-plugin-react": "^4.2.3",
+    "express": "~4.13.4",
+    "glob": "^5.0.13",
+    "morgan": "~1.7.0",
+    "pg": "^6.0.3",
+    "serve-favicon": "~2.3.0",
+    "when": "~3.7"
+  },
+  "devDependencies": {
+    "babel-core": "^6.7.4",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.6.0",
+    "chai": "*",
+    "mocha": "*",
+    "superagent": "^1.2.0"
+  },
+  "engines": {
+    "node": "5.x"
+  }
+}
