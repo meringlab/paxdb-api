@@ -3,10 +3,17 @@
 /**
  * Module dependencies.
  */
+const bunyan = require('bunyan');
 
 var app = require('../app');
-var debug = require('debug')('api-species:server');
 var http = require('http');
+
+
+const log = bunyan.createLogger({
+  name: "paxdb-API",
+  module: "www"
+  //TODO server / host / process ..
+});
 
 /**
  * Get port from environment and store in Express.
@@ -86,5 +93,5 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  log.info(`Listening on ${bind}`);
 }
