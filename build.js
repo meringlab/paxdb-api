@@ -68,6 +68,7 @@ function loadProteins(cb) {
       ` from items.proteins where species_id = ${speciesId}`;
     client.query(sql).then(res => {
       res.rows.forEach(function(r) {
+        //TODO family!
         proteins[speciesId][r.protein_id] = {
           id: r.protein_id,
           externalId: r.protein_external_id,
@@ -106,7 +107,20 @@ function loadDatasetInfo(cb) {
     const rl = readline.createInterface({ input })
     rl.on('close', function() {
       callback(null);
-      dataset.abundances = abundances;
+
+      //add ranks
+      var abundancesSorted = []
+      for (var p in abundances) {
+        abundancesSorted.push({id: p, abundance: abundances[p]})
+      }
+      abundancesSorted = abundancesSorted.sort((a, b) => {
+        return b.abundance - a.abundance
+      });
+      dataset.abundances = {};
+      abundancesSorted.forEach((a, rank) => {
+        dataset.abundances[a.id] = {a: a.abundance, r: rank}
+      });
+      dataset.num_abundances = abundancesSorted.length;
       if (Object.keys(peptideCounts).length === 0) {
         dataset.hasPeptideCounts = false;
       } else {
@@ -297,4 +311,5 @@ function buildDatasets() {
     client.end();
   });
 }
-buildDatasets();
+buildSpecies();
+// buildDatasets();

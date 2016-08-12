@@ -4,6 +4,7 @@ var path = require('path');
 var routes = require('./routes/index');
 var species = require('./routes/species');
 var dataset = require('./routes/dataset');
+var protein = require('./routes/protein');
 
 var app = express();
 
@@ -14,6 +15,7 @@ app.set('view engine', 'ejs');
 app.use('/', routes);
 app.use('/species', species);
 app.use('/dataset', dataset);
+app.use('/protein', protein);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
