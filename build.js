@@ -49,11 +49,11 @@ function parseOrthgroups(contents, familySet) {
 
 function loadProteins(cb) {
   console.log(`loading proteins`);
-  // console.log("loading orthgroups");
-  // const familySet = new Set();
-  // fs.readdirSync('./data/orthgroups').forEach(function(file){
-  //   parseOrthgroups(fs.readFileSync(file, {'encoding': 'utf8'}), familySet);
-  // });
+  console.log("loading orthgroups");
+  const familySet = new Set();
+  fs.readdirSync('./data/orthgroups').forEach(function(file){
+    parseOrthgroups(fs.readFileSync(`./data/orthgroups/${file}`, {'encoding': 'utf8'}), familySet);
+  });
 
   const proteins = {};
   async.eachSeries(speciesIds, function(speciesId, callback) {
@@ -63,11 +63,11 @@ function loadProteins(cb) {
       ` from items.proteins where species_id = ${speciesId}`;
     client.query(sql).then(res => {
       res.rows.forEach(function(r) {
-        //TODO family!
         proteins[speciesId][r.protein_id] = {
           id: r.protein_id,
           externalId: r.protein_external_id,
           name: r.preferred_name,
+          hasFamily: familySet.has(r.protein_id),
           annotation: r.annotation
         };
       });
