@@ -3,5 +3,8 @@
   externalId : <%= protein.externalId %>,
   name : <%= protein.name %>,
   annotation : <%= protein.annotation %>,
+<% if (protein.uniprotId) { %>
+  uniprotId :<%= protein.uniprotId %>,
+<%}%>
   abundances : <%- abundances %>
 }

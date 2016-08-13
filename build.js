@@ -34,34 +34,29 @@ function loadSpeciesInfo(callback) {
   });
 }
 
+function parseOrthgroups(contents, familySet) {
+  contents.split('\n').forEach(function (line) {
+    if (line.trim() == 0) {
+      return
+    }
+    var rec = line.split('\t');
+    //{"id": 9443, "name": "NOG21051", "clade": "PRIMATES", "members": [1803841, 1854701]},
+    rec.slice(1, rec.length).forEach(function (el) {
+      familySet.add(parseInt(el));
+    });
+  });
+}
+
 function loadProteins(cb) {
   console.log(`loading proteins`);
-
-  //TODO uniprot
-  // Map<Integer, Set<UniprotAC>> uniprotIds = new LinkedHashMap<Integer, Set<UniprotAC>>();
-  //
-  // try {
-  //   final ResultSet resultSet = dbManager.executeQuery("SELECT protein_id, linkout_url FROM items.proteins_linkouts " +
-  //     " WHERE  linkout_type='UniProt' AND protein_id in (select protein_id from items.proteins where species_id = " + speciesId + ")");
-  //   while (resultSet.next()) {
-  //     final Integer proteinId = resultSet.getInt(1);
-  //     if (!uniprotIds.containsKey(proteinId)) {
-  //       uniprotIds.put(proteinId, new HashSet<UniprotAC>(0));
-  //     }
-  //     final String linkout = resultSet.getString(2);
-  //     final String ac = linkout.substring(1 + linkout.lastIndexOf("/"));
-  //     uniprotIds.get(proteinId).add(new UniprotAC(ac));
-  //   }
-  // } catch (SQLException e) {
-  //   throw new RuntimeException("error loading protein names from database", e);
-  // }
-  // if (uniprotIds.isEmpty()) {
-  //   log.warn("UniProt ids are missing!");
-  // }
+  // console.log("loading orthgroups");
+  // const familySet = new Set();
+  // fs.readdirSync('./data/orthgroups').forEach(function(file){
+  //   parseOrthgroups(fs.readFileSync(file, {'encoding': 'utf8'}), familySet);
+  // });
 
   const proteins = {};
   async.eachSeries(speciesIds, function(speciesId, callback) {
-    "use strict";
     proteins[speciesId] = {};
 
     const sql = `select protein_id, protein_external_id, preferred_name, annotation ` +
@@ -76,8 +71,24 @@ function loadProteins(cb) {
           annotation: r.annotation
         };
       });
-      console.log(`loading proteins for ${speciesId} DONE`);
-      callback();
+      const uniprotSql = `SELECT protein_id, linkout_url FROM items.proteins_linkouts ` +
+      ` WHERE  linkout_type='UniProt' AND protein_id in (select protein_id from items.proteins where species_id = ${speciesId})`;
+      client.query(uniprotSql).then(res => {
+        res.rows.forEach(function(r) {
+          var ac = r.linkout_url.substring(1 + r.linkout_url.lastIndexOf("/"));
+          const protein = proteins[speciesId][r.protein_id];
+          if (protein.uniprotId) {
+            console.log('ERROR multiple uniprot ids, must to convert to an array');
+            return;
+          }
+          protein.uniprotId = ac;
+        });
+
+
+
+        console.log(`loading proteins for ${speciesId} DONE`);
+        callback();
+      });
     });
   }, function(err) {
     console.log(`loading proteins DONE`);
@@ -311,5 +322,6 @@ function buildDatasets() {
     client.end();
   });
 }
-buildSpecies();
+// buildSpecies();
 // buildDatasets();
+buildProteins();
