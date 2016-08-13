@@ -1,10 +1,10 @@
 {
-  id : <%= protein.id %>,
-  externalId : <%= protein.externalId %>,
-  name : <%= protein.name %>,
-  annotation : <%= protein.annotation %>,
+  "id" : <%= protein.id %>,
+  "externalId" : "<%= protein.externalId %>",
+  "name" : "<%= protein.name %>",
+  "annotation" : "<%= protein.annotation %>",
 <% if (protein.uniprotId) { %>
-  uniprotId :<%= protein.uniprotId %>,
+  "uniprotId" : "<%= protein.uniprotId %>",
 <%}%>
-  abundances : <%- abundances %>
+  "abundances" : <%- abundances %>
 }
