@@ -4,7 +4,7 @@ const bunyan = require('bunyan');
 
 const speciesData = require('../lib/species');
 const proteinData = require('../lib/proteins');
-const datasetData = require('../lib/dataset');
+const datasetData = require('../lib/dataset_data');
 
 const speciesForProtein = {}
 

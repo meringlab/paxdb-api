@@ -3,7 +3,7 @@ const router = express.Router();
 const bunyan = require('bunyan');
 
 const species = require('../lib/species');
-const dataset = require('../lib/dataset');
+const dataset = require('../lib/dataset_data');
 
 const log = bunyan.createLogger({
     name: "paxdb-API",
