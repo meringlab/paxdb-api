@@ -64,7 +64,7 @@ router.get('/:species_id/:dataset_id/abundances', (req, res) => {
       id: id,
       abundance: abundances[id].a,
       rank: abundances[id].r,
-      name: proteins_data[id].name
+      name: proteins_data[req.species_id][id].name
     }
   });
   res.header('content-type', 'application/json');
