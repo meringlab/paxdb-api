@@ -230,7 +230,7 @@ function buildSpecies() {
 
     loadSpeciesInfo(function(species) {
       for (var s in species) {
-        s.genome_source = sources[s.id]
+        species[s].genome_source = sources[s];
       }
 
       loadDatasetInfo(function(datasets, proteinsCovered) {
@@ -348,6 +348,6 @@ function buildDatasets() {
     client.end();
   });
 }
-// buildSpecies();
-buildDatasets();
+buildSpecies();
+// buildDatasets();
 // buildProteins();
