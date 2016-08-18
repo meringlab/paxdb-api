@@ -101,6 +101,8 @@ function loadProteins(cb) {
 function loadDatasetInfo(cb) {
   console.log(`loading dataset info`);
   const datasets = {};
+  const abundances_asc = {};
+  const abundances_desc = {};
   const proteinsCovered = {}
   async.eachSeries(fs.readdirSync('./data/abundances'), function(d, callback) {
     const dataset = { };
@@ -117,7 +119,6 @@ function loadDatasetInfo(cb) {
     const input = fs.createReadStream(`./data/abundances/${d}`);
     const rl = readline.createInterface({ input })
     rl.on('close', function() {
-      callback(null);
 
       //add ranks
       var abundancesSorted = []
@@ -128,9 +129,18 @@ function loadDatasetInfo(cb) {
         return b.abundance - a.abundance
       });
       dataset.abundances = {};
+      const asc = [];
+      const desc = [];
       abundancesSorted.forEach((a, rank) => {
         dataset.abundances[a.id] = {a: a.abundance, r: rank}
+        var intId = parseInt(a.id,10);
+        desc.push(intId);
+        asc.push(intId);
       });
+      asc.reverse();
+      abundances_asc[dataset.id] = asc;
+      abundances_desc[dataset.id] = desc;
+
       dataset.num_abundances = abundancesSorted.length;
       if (Object.keys(peptideCounts).length === 0) {
         dataset.hasPeptideCounts = false;
@@ -139,13 +149,17 @@ function loadDatasetInfo(cb) {
         dataset.peptideCounts = peptideCounts;
       }
       dataset.filename = d;
+
+      callback(null);
     });
 
     rl.on('line', function(line) {
-      if (!line.startsWith("#") && !dataset.integrated) {
+      if (!line.startsWith("#")) {
         var rec = line.split('\t');
         if (rec.length > 1) {
-          proteinsCovered[species].add(rec[0])
+          if (!dataset.integrated) {
+            proteinsCovered[species].add(rec[0]);
+          }
           abundances[rec[0]] = parseFloat(rec[2]);
         }
         if (rec.length == 4) {
@@ -190,7 +204,7 @@ function loadDatasetInfo(cb) {
       proteinsCovered[id] = proteinsCovered[id].size
     });
 
-    cb(datasets, proteinsCovered);
+    cb(datasets, proteinsCovered, abundances_asc, abundances_desc);
   });
 }
 
@@ -280,7 +294,7 @@ function buildProteins() {
 
 function buildDatasets() {
 
-  loadDatasetInfo(function(datasets, proteinsCovered) {
+  loadDatasetInfo(function(datasets, proteinsCovered, abundances_asc, abundances_desc) {
     const datasetsJson = {}
     const abundances = {};
     const peptideCounts = {};
@@ -309,6 +323,16 @@ function buildDatasets() {
     writeStream.write(';\n');
     writeStream.write(';\n');
 
+    writeStream.write("const abundances_asc = ");
+    writeStream.write(JSON.stringify(abundances_asc));
+    writeStream.write(';\n');
+    writeStream.write(';\n');
+
+    writeStream.write("const abundances_desc = ");
+    writeStream.write(JSON.stringify(abundances_desc));
+    writeStream.write(';\n');
+    writeStream.write(';\n');
+
     writeStream.write("const peptideCounts = ");
     writeStream.write(JSON.stringify(peptideCounts));
     writeStream.write(';\n');
@@ -316,6 +340,8 @@ function buildDatasets() {
 
     writeStream.write('module.exports.datasets = datasets;\n');
     writeStream.write('module.exports.abundances = abundances;\n');
+    writeStream.write('module.exports.abundances_asc = abundances_asc;\n');
+    writeStream.write('module.exports.abundances_desc = abundances_desc;\n');
     writeStream.write('module.exports.peptideCounts = peptideCounts;\n');
     writeStream.end();
     client.on('drain', client.end.bind(client));
@@ -323,5 +349,5 @@ function buildDatasets() {
   });
 }
 // buildSpecies();
-// buildDatasets();
-buildProteins();
+buildDatasets();
+// buildProteins();

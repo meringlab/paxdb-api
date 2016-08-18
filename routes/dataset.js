@@ -4,11 +4,12 @@ const bunyan = require('bunyan');
 
 const species = require('../lib/species');
 const dataset = require('../lib/dataset_data');
+const proteins_data = require('../lib/proteins');
 
 const log = bunyan.createLogger({
-    name: "paxdb-API",
-    module: "dataset"
-    //TODO server / host / process ..
+  name: "paxdb-API",
+  module: "dataset"
+  //TODO server / host / process ..
 });
 
 router.param('species_id', (req, res, next, speciesId) => {
@@ -47,6 +48,29 @@ router.get('/:species_id/:dataset_id', (req, res) => {
   res.header('content-type', 'application/json');
   res.end(JSON.stringify(dataset.datasets[req.dataset_id]));
 });
+
+router.get('/:species_id/:dataset_id/abundances', (req, res) => {
+  //query options are start, end and sort
+  const start = parseInt(req.query.start,10) || 0;
+  const end = parseInt(req.query.end) || 10;
+  //TODO check if datasetid is valid
+  const abundances = dataset.abundances[req.dataset_id];
+  var proteins = dataset.abundances_desc[req.dataset_id];
+  if (req.query.sort === 'abundance') { //ascending, descending by default
+    proteins = dataset.abundances_asc[req.dataset_id];
+  }
+  const result = proteins.slice(start, end).map(id => {
+    return {
+      id: id,
+      abundance: abundances[id].a,
+      rank: abundances[id].r,
+      name: proteins_data[id].name
+    }
+  });
+  res.header('content-type', 'application/json');
+  res.end(JSON.stringify(result));
+});
+
 
 module.exports = router;
 //TODO
