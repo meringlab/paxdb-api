@@ -34,14 +34,14 @@ router.get('/', (req, res) => {
 
   var proteins = ids.map(function(id) {
     var protein = proteinData[speciesId][id];
-    var rec = {id: protein.id, name: protein.name};
+    var rec = {id: protein.id, externalId: protein.externalId, name: protein.name};
     rec.abundances = speciesData[speciesId].datasets.map(function(datasetInfo) {
       const abundance = datasetData.abundances[datasetInfo.id][id];
       return datasetLib.formattedAbundance(abundance ? abundance.a : null);
     })
     return rec;
   });
-  const result = { proteins, datasets: speciesData[speciesId].datasets };
+  const result = { speciesId, proteins, datasets: speciesData[speciesId].datasets };
 
   res.header('content-type', 'application/json');
   res.send(JSON.stringify(result))
