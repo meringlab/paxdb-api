@@ -5,6 +5,23 @@ const bunyan = require('bunyan');
 const species = require('../lib/species');
 const dataset = require('../lib/dataset_data');
 const proteins_data = require('../lib/proteins');
+const proteinsByNameAsc = {};
+const proteinsByNameDesc = {};
+for (var datasetId in dataset.datasets) {
+  var speciesId = dataset.datasets[datasetId].filename.split('-')[0];
+  var proteins = proteins_data[speciesId];
+  proteinsByNameAsc[datasetId]= Object.keys(dataset.abundances[datasetId]);
+  proteinsByNameAsc[datasetId].sort(function(p1, p2) {
+    if ( proteins[p1].name < proteins[p2].name )
+      return -1;
+    if ( proteins[p1].name > proteins[p2].name )
+      return 1;
+    return 0;
+  });
+
+  proteinsByNameDesc[datasetId] = Array.prototype.slice.call(proteinsByNameAsc[datasetId]);  //local copy
+  proteinsByNameDesc[datasetId].reverse();
+}
 
 const log = bunyan.createLogger({
   name: "paxdb-API",
@@ -58,13 +75,19 @@ router.get('/:species_id/:dataset_id/abundances', (req, res) => {
   var proteins = dataset.abundances_desc[req.dataset_id];
   if (req.query.sort === 'abundance') { //ascending, descending by default
     proteins = dataset.abundances_asc[req.dataset_id];
+  } else if (req.query.sort === 'proteinName') {
+    proteins =proteinsByNameAsc[req.dataset_id];
+  }  else if (req.query.sort === '-proteinName') {
+    proteins =proteinsByNameDesc[req.dataset_id];
   }
   const result = proteins.slice(start, end).map(id => {
+    var proteinRec = proteins_data[req.species_id][id];
     return {
       id: id,
       abundance: abundances[id].a,
       rank: abundances[id].r,
-      name: proteins_data[req.species_id][id].name
+      name: proteinRec.name,
+      annotation: proteinRec.annotation
     }
   });
   res.header('content-type', 'application/json');
