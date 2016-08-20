@@ -7,11 +7,16 @@ const proteinData = require('../lib/proteins');
 const datasetData = require('../lib/dataset_data');
 const datasetLib = require('../lib/dataset');
 
-const speciesForProtein = {}
+const speciesForProtein = {};
+const uniprotIdsMap = {};
 
 for (var speciesId in proteinData) {
   for (var proteinId in proteinData[speciesId]) {
     speciesForProtein[proteinId] = speciesId;
+    var uniprotId = proteinData[speciesId][proteinId].uniprotId;
+    if (uniprotId) {
+      uniprotIdsMap[uniprotId] = proteinId;
+    }
   }
 }
 
@@ -36,24 +41,37 @@ router.param('protein_id', (req, res, next, proteinId) => {
   next();
 });
 
-
-router.get('/:protein_id', (req, res) => {
+function renderProtein(req, res) {
   var speciesId = speciesForProtein[req.protein_id];
   const protein = proteinData[speciesId][req.protein_id];
   const abundances = speciesData[speciesId].datasets.map(function(datasetInfo) {
     var dataset = datasetData.abundances[datasetInfo.id];
     const abundance = dataset[req.protein_id];
-    const ranking  = new datasetLib.Ranking(datasetData.datasets[datasetInfo.id].num_abundances);
+    const ranking = new datasetLib.Ranking(datasetData.datasets[datasetInfo.id].num_abundances);
     const a = {
       datasetInfo: datasetInfo,
-      formattedAbundance: datasetLib.formattedAbundance(abundance? abundance.a : null),
-      rank: ranking.formatRank(abundance? abundance.r : null)
+      formattedAbundance: datasetLib.formattedAbundance(abundance ? abundance.a : null),
+      rank: ranking.formatRank(abundance ? abundance.r : null)
     };
     return a;
   });
   const abundancesJson = JSON.stringify(abundances);
   res.header('content-type', 'application/json');
   res.render('protein', { protein: protein, abundances: abundancesJson });
+}
+
+router.get('/:protein_id', (req, res) => {
+  renderProtein(req, res);
+});
+
+router.get('/uniprot/:ac', (req, res) => {
+  if (req.params.ac in uniprotIdsMap) {
+    req.protein_id = uniprotIdsMap[req.params.ac];
+    renderProtein(req, res);
+    return;
+  }
+  res.status(404);
+  res.end(`no protein in paxdb has this uniprot ac ${req.params.ac}`);
 });
 
 module.exports = router;
