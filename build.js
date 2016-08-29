@@ -349,12 +349,17 @@ function buildDatasets() {
   });
 }
 
+
+// buildSpecies();
+// buildDatasets();
+// buildProteins();
+
 /**
  * depends on dataset_data!
  */
 function buildHistograms() {
   var makeHistogram = require('./lib/histo')
-  const dataset = require('../lib/dataset_data');
+  const dataset = require('./lib/dataset_data');
 
   for (var datasetId in dataset.datasets) {
     var abundancesMap = dataset.abundances[datasetId]; //map proteinId -> {a : , r: , ..}
@@ -366,13 +371,10 @@ function buildHistograms() {
       }
     }
     var d3n = makeHistogram(abundances);
-    fs.writeFile(`./public/images/datasets/${datasetId}-new.svg`, d3n.svgString(), (err) => {
+    fs.writeFile(`./public/images/datasets/${datasetId}.svg`, d3n.svgString(), (err) => {
       if (err) console.log(`${datasetId} failed: ${err.message}`);
     });
   }
 }
 
-// buildSpecies();
-// buildDatasets();
-// buildProteins();
-
+buildHistograms();
