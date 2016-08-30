@@ -1,27 +1,31 @@
 const express = require('express');
 const router = express.Router();
 const bunyan = require('bunyan');
+const fs = require('fs');
 
+const makeHistogram = require('../lib/histo')
 const species = require('../lib/species');
 const dataset = require('../lib/dataset_data');
 const proteins_data = require('../lib/proteins');
 const proteinsByNameAsc = {};
 const proteinsByNameDesc = {};
-for (var datasetId in dataset.datasets) {
-  var speciesId = dataset.datasets[datasetId].filename.split('-')[0];
-  var proteins = proteins_data[speciesId];
-  proteinsByNameAsc[datasetId]= Object.keys(dataset.abundances[datasetId]);
-  proteinsByNameAsc[datasetId].sort(function(p1, p2) {
-    if ( proteins[p1].name < proteins[p2].name )
-      return -1;
-    if ( proteins[p1].name > proteins[p2].name )
-      return 1;
-    return 0;
-  });
+(function iiv() {
+  for (var datasetId in dataset.datasets) {
+    var speciesId = dataset.datasets[datasetId].filename.split('-')[0];
+    var proteins = proteins_data[speciesId];
+    proteinsByNameAsc[datasetId]= Object.keys(dataset.abundances[datasetId]);
+    proteinsByNameAsc[datasetId].sort(function(p1, p2) {
+      if ( proteins[p1].name < proteins[p2].name )
+        return -1;
+      if ( proteins[p1].name > proteins[p2].name )
+        return 1;
+      return 0;
+    });
 
-  proteinsByNameDesc[datasetId] = Array.prototype.slice.call(proteinsByNameAsc[datasetId]);  //local copy
-  proteinsByNameDesc[datasetId].reverse();
-}
+    proteinsByNameDesc[datasetId] = Array.prototype.slice.call(proteinsByNameAsc[datasetId]);  //local copy
+    proteinsByNameDesc[datasetId].reverse();
+  }
+})();
 
 const log = bunyan.createLogger({
   name: "paxdb-API",
@@ -61,6 +65,12 @@ router.param('dataset_id', (req, res, next, datasetId) => {
 
 });
 
+router.get('/:dataset_id/histogram', (req, res) => {
+  var proteinId = req.query.hightlightProteinId;
+  const svgFile = `./public/images/datasets/${req.dataset_id}` + (proteinId ? `_${proteinId}` : '') + '.svg';
+  sendHistogram(svgFile, req.dataset_id, res, proteinId);
+});
+
 router.get('/:species_id/:dataset_id', (req, res) => {
   res.header('content-type', 'application/json');
   res.end(JSON.stringify(dataset.datasets[req.dataset_id]));
@@ -70,7 +80,7 @@ router.get('/:species_id/:dataset_id/abundances', (req, res) => {
   //query options are start, end and sort
   const start = parseInt(req.query.start,10) || 0;
   const end = parseInt(req.query.end) || 10;
-  //TODO check if datasetid is valid
+
   const abundances = dataset.abundances[req.dataset_id];
   var proteins = dataset.abundances_desc[req.dataset_id];
   if (req.query.sort === 'abundance') { //ascending, descending by default
@@ -94,6 +104,36 @@ router.get('/:species_id/:dataset_id/abundances', (req, res) => {
   res.end(JSON.stringify(result));
 });
 
+function sendHistogram(svgFile, datasetId, res, highlightProteinId) {
+  fs.readFile(svgFile, { encoding: 'utf8' }, (err, data) => {
+    if (err) {
+      var abundancesMap = dataset.abundances[datasetId]; //map proteinId -> {a : , r: , ..}
+      var abundances = [];
+      for (var proteinId in abundancesMap) {
+        var a = abundancesMap[proteinId].a;
+        if (a >= 0.01) { //otherwise it cannot be plotted
+          abundances.push(a);
+        }
+      }
+      var highlightAbundance = undefined;
+      if (highlightProteinId && highlightProteinId in abundancesMap) {
+        highlightAbundance = abundancesMap[highlightProteinId].a;
+      }
+      var d3n = makeHistogram(abundances, highlightAbundance);
+      res.header('content-type', 'image/svg+xml');
+      res.end(d3n.svgString());
+
+      if (err.code === 'ENOENT') {
+        fs.writeFile(svgFile, d3n.svgString(), (err) => {
+          if (err) log.error(`saving histogram for ${datasetId} - ${svgFile}: ${err.message}`);
+        });
+      }
+    } else {
+      res.header('content-type', 'image/svg+xml');
+      res.end(data);
+    }
+  });
+}
 
 module.exports = router;
 //TODO
