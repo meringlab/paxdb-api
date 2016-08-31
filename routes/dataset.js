@@ -4,6 +4,8 @@ const bunyan = require('bunyan');
 const fs = require('fs');
 
 const makeHistogram = require('../lib/histo')
+const scatter = require('../lib/scatter')
+const cladogram = require('../lib/cladogram')
 const species = require('../lib/species');
 const dataset = require('../lib/dataset_data');
 const proteins_data = require('../lib/proteins');
@@ -13,11 +15,11 @@ const proteinsByNameDesc = {};
   for (var datasetId in dataset.datasets) {
     var speciesId = dataset.datasets[datasetId].filename.split('-')[0];
     var proteins = proteins_data[speciesId];
-    proteinsByNameAsc[datasetId]= Object.keys(dataset.abundances[datasetId]);
+    proteinsByNameAsc[datasetId] = Object.keys(dataset.abundances[datasetId]);
     proteinsByNameAsc[datasetId].sort(function(p1, p2) {
-      if ( proteins[p1].name < proteins[p2].name )
+      if (proteins[p1].name < proteins[p2].name)
         return -1;
-      if ( proteins[p1].name > proteins[p2].name )
+      if (proteins[p1].name > proteins[p2].name)
         return 1;
       return 0;
     });
@@ -65,6 +67,13 @@ router.param('dataset_id', (req, res, next, datasetId) => {
 
 });
 
+router.get('/:dataset_id/correlate/:dst_dataset_id', (req, res) => {
+  const minId = Math.min(parseInt(req.dataset_id, 10), parseInt(req.params.dst_dataset_id, 10));
+  const maxId = Math.max(parseInt(req.dataset_id, 10), parseInt(req.params.dst_dataset_id, 10));
+  const svgFile = `./public/images/scatter/${minId}_${maxId}.svg`;
+  sendScatter(svgFile, minId, maxId, res);
+});
+
 router.get('/:dataset_id/histogram', (req, res) => {
   var proteinId = req.query.hightlightProteinId;
   const svgFile = `./public/images/datasets/${req.dataset_id}` + (proteinId ? `_${proteinId}` : '') + '.svg';
@@ -78,7 +87,7 @@ router.get('/:species_id/:dataset_id', (req, res) => {
 
 router.get('/:species_id/:dataset_id/abundances', (req, res) => {
   //query options are start, end and sort
-  const start = parseInt(req.query.start,10) || 0;
+  const start = parseInt(req.query.start, 10) || 0;
   const end = parseInt(req.query.end) || 10;
 
   const abundances = dataset.abundances[req.dataset_id];
@@ -86,9 +95,9 @@ router.get('/:species_id/:dataset_id/abundances', (req, res) => {
   if (req.query.sort === 'abundance') { //ascending, descending by default
     proteins = dataset.abundances_asc[req.dataset_id];
   } else if (req.query.sort === 'proteinName') {
-    proteins =proteinsByNameAsc[req.dataset_id];
-  }  else if (req.query.sort === '-proteinName') {
-    proteins =proteinsByNameDesc[req.dataset_id];
+    proteins = proteinsByNameAsc[req.dataset_id];
+  } else if (req.query.sort === '-proteinName') {
+    proteins = proteinsByNameDesc[req.dataset_id];
   }
   const result = proteins.slice(start, end).map(id => {
     var proteinRec = proteins_data[req.species_id][id];
@@ -134,6 +143,32 @@ function sendHistogram(svgFile, datasetId, res, highlightProteinId) {
     }
   });
 }
+
+function sendScatter(svgFile, d1, d2, res) {
+  fs.readFile(svgFile, { encoding: 'utf8' }, (err, data) => {
+    if (err) {
+      var s1 = dataset.datasets[d1].filename.split('-')[0];
+      var s2 = dataset.datasets[d2].filename.split('-')[0];
+      var nogs = cladogram.firstCommonAncestor(s1, s2).nogs;
+      var a1 = dataset.abundances[d1]; //map proteinId -> {a : , r: , ..}
+      var a2 = dataset.abundances[d2]; //map proteinId -> {a : , r: , ..}
+      var data = scatter.correlate(a1, a2, nogs)
+      var d3n = scatter.plot(data, dataset.datasets[d1].name, dataset.datasets[d2].name);
+      res.header('content-type', 'image/svg+xml');
+      res.end(d3n.svgString());
+
+      if (err.code === 'ENOENT') {
+        fs.writeFile(svgFile, d3n.svgString(), (err) => {
+          if (err) log.error(`saving scatter for ${d1}/${d2} - ${svgFile}: ${err.message}`);
+        });
+      }
+    } else {
+      res.header('content-type', 'image/svg+xml');
+      res.end(data);
+    }
+  });
+}
+
 
 module.exports = router;
 //TODO
