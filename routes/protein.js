@@ -3,21 +3,11 @@ const router = express.Router();
 const bunyan = require('bunyan');
 
 const speciesData = require('../lib/species');
-const proteinData = require('../lib/proteins');
 const datasetLib = require('../lib/dataset');
 
-const speciesForProtein = {};
-const uniprotIdsMap = {};
-
-for (var speciesId in proteinData) {
-  for (var proteinId in proteinData[speciesId]) {
-    speciesForProtein[proteinId] = speciesId;
-    var uniprotId = proteinData[speciesId][proteinId].uniprotId;
-    if (uniprotId) {
-      uniprotIdsMap[uniprotId] = proteinId;
-    }
-  }
-}
+const proteinIndices = require('../lib/proteins_index')
+const speciesForProtein = proteinIndices.speciesForProtein;
+const uniprotIdsMap = proteinIndices.uniprotIdsMap;
 
 const log = bunyan.createLogger({
   name: "paxdb-API",
@@ -42,7 +32,7 @@ router.param('protein_id', (req, res, next, proteinId) => {
 
 function renderProtein(req, res) {
   var speciesId = speciesForProtein[req.protein_id];
-  const protein = proteinData[speciesId][req.protein_id];
+  const protein = require(`../lib/proteins/${speciesId}`)[req.protein_id];
   const abundances = speciesData[speciesId].datasets.map(function(datasetInfo) {
     var dataset = require(`../lib/dataset/${datasetInfo.id}`);
     const abundance = dataset.abundances[req.protein_id];

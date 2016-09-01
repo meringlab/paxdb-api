@@ -14,7 +14,6 @@ log.info('loading dataset module');
 const plotter = require('./plotter')
 const cladogram = require('../lib/cladogram')
 const species = require('../lib/species');
-const proteins_data = require('../lib/proteins');
 //lazy init on access
 const proteinsByNameAsc = {};
 const proteinsByNameDesc = {};
@@ -79,7 +78,7 @@ function getProteinsSortedByName(dataset, asc /* true by default*/) {
   var datasetId = dataset.info.id;
   if (!(datasetId in map)) {
     var speciesId = dataset.info.species_id;
-    var proteins = proteins_data[speciesId];
+    var proteins = require(`../lib/proteins/${speciesId}.js`);
     proteinsByNameAsc[datasetId] = Object.keys(dataset.abundances);
     proteinsByNameAsc[datasetId].sort(function(p1, p2) {
       if (proteins[p1].name < proteins[p2].name)
@@ -110,8 +109,9 @@ router.get('/:species_id/:dataset_id/abundances', (req, res) => {
   } else if (req.query.sort === '-proteinName') {
     proteins = getProteinsSortedByName(req.dataset, false);
   }
+  var proteinsData = require(`../lib/proteins/${[req.species_id]}.js`);
   const result = proteins.slice(start, end).map(id => {
-    var proteinRec = proteins_data[req.species_id][id];
+    var proteinRec = proteinsData[id];
     return {
       id: id,
       abundance: abundances[id].a,
