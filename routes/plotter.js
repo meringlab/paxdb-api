@@ -3,15 +3,16 @@
  */
 
 const fs = require('fs');
-const makeHistogram = require('../lib/histo')
-const scatter = require('../lib/scatter')
-const dataset = require('../lib/dataset_data');
-const cladogram = require('../lib/cladogram')
+const makeHistogram = require('../lib/histo');
+const scatter = require('../lib/scatter');
+const cladogram = require('../lib/cladogram');
 
 function sendHistogram(svgFile, datasetId, res, highlightProteinId) {
   fs.readFile(svgFile, { encoding: 'utf8' }, (err, data) => {
     if (err) {
-      var abundancesMap = dataset.abundances[datasetId]; //map proteinId -> {a : , r: , ..}
+      var dataset = require(`../lib/dataset/${datasetId}`);
+
+      var abundancesMap = dataset.abundances; //map proteinId -> {a : , r: , ..}
       var abundances = [];
       for (var proteinId in abundancesMap) {
         var a = abundancesMap[proteinId].a;
@@ -42,13 +43,16 @@ function sendHistogram(svgFile, datasetId, res, highlightProteinId) {
 function sendScatter(svgFile, d1, d2, res) {
   fs.readFile(svgFile, { encoding: 'utf8' }, (err, data) => {
     if (err) {
-      var s1 = dataset.datasets[d1].filename.split('-')[0];
-      var s2 = dataset.datasets[d2].filename.split('-')[0];
+      var dataset1 = require(`../lib/dataset/${d1}`);
+      var dataset2 = require(`../lib/dataset/${d2}`);
+
+      var s1 = dataset1.info.species_id;
+      var s2 = dataset2.info.species_id;
       var nogs = cladogram.firstCommonAncestor(s1, s2).nogs;
-      var a1 = dataset.abundances[d1]; //map proteinId -> {a : , r: , ..}
-      var a2 = dataset.abundances[d2]; //map proteinId -> {a : , r: , ..}
-      var data = scatter.correlate(a1, a2, nogs)
-      var d3n = scatter.plot(data, dataset.datasets[d1].name, dataset.datasets[d2].name);
+      var a1 = dataset1.abundances; //map proteinId -> {a : , r: , ..}
+      var a2 = dataset2.abundances; //map proteinId -> {a : , r: , ..}
+      var data = scatter.correlate(a1, a2, nogs);
+      var d3n = scatter.plot(data, dataset1.info.name, dataset2.info.name);
       res.header('content-type', 'image/svg+xml');
       res.end(d3n.svgString());
 

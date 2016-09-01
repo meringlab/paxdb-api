@@ -4,7 +4,6 @@ const bunyan = require('bunyan');
 
 const speciesData = require('../lib/species');
 const proteinData = require('../lib/proteins');
-const datasetData = require('../lib/dataset_data');
 const datasetLib = require('../lib/dataset');
 
 const speciesForProtein = {};
@@ -45,9 +44,9 @@ function renderProtein(req, res) {
   var speciesId = speciesForProtein[req.protein_id];
   const protein = proteinData[speciesId][req.protein_id];
   const abundances = speciesData[speciesId].datasets.map(function(datasetInfo) {
-    var dataset = datasetData.abundances[datasetInfo.id];
-    const abundance = dataset[req.protein_id];
-    const ranking = new datasetLib.Ranking(datasetData.datasets[datasetInfo.id].num_abundances);
+    var dataset = require(`../lib/dataset/${datasetInfo.id}`);
+    const abundance = dataset.abundances[req.protein_id];
+    const ranking = new datasetLib.Ranking(dataset.info.num_abundances);
     const a = {
       datasetInfo: datasetInfo,
       formattedAbundance: datasetLib.formattedAbundance(abundance ? abundance.a : null),
