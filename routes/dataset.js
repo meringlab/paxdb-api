@@ -3,14 +3,22 @@ const router = express.Router();
 const bunyan = require('bunyan');
 const fs = require('fs');
 
-const makeHistogram = require('../lib/histo')
-const scatter = require('../lib/scatter')
+const log = bunyan.createLogger({
+  name: "paxdb-API",
+  module: "dataset"
+  //TODO server / host / process ..
+});
+
+log.info('loading dataset module');
+
+const plotter = require('./plotter')
 const cladogram = require('../lib/cladogram')
 const species = require('../lib/species');
 const dataset = require('../lib/dataset_data');
 const proteins_data = require('../lib/proteins');
 const proteinsByNameAsc = {};
 const proteinsByNameDesc = {};
+
 (function iiv() {
   for (var datasetId in dataset.datasets) {
     var speciesId = dataset.datasets[datasetId].filename.split('-')[0];
@@ -28,12 +36,6 @@ const proteinsByNameDesc = {};
     proteinsByNameDesc[datasetId].reverse();
   }
 })();
-
-const log = bunyan.createLogger({
-  name: "paxdb-API",
-  module: "dataset"
-  //TODO server / host / process ..
-});
 
 router.param('species_id', (req, res, next, speciesId) => {
   var id = parseInt(speciesId, 10);
@@ -71,13 +73,13 @@ router.get('/:dataset_id/correlate/:dst_dataset_id', (req, res) => {
   const minId = Math.min(parseInt(req.dataset_id, 10), parseInt(req.params.dst_dataset_id, 10));
   const maxId = Math.max(parseInt(req.dataset_id, 10), parseInt(req.params.dst_dataset_id, 10));
   const svgFile = `./public/images/scatter/${minId}_${maxId}.svg`;
-  sendScatter(svgFile, minId, maxId, res);
+  plotter.sendScatter(svgFile, minId, maxId, res);
 });
 
 router.get('/:dataset_id/histogram', (req, res) => {
   var proteinId = req.query.hightlightProteinId;
   const svgFile = `./public/images/datasets/${req.dataset_id}` + (proteinId ? `_${proteinId}` : '') + '.svg';
-  sendHistogram(svgFile, req.dataset_id, res, proteinId);
+  plotter.sendHistogram(svgFile, req.dataset_id, res, proteinId);
 });
 
 router.get('/:species_id/:dataset_id', (req, res) => {
@@ -113,62 +115,7 @@ router.get('/:species_id/:dataset_id/abundances', (req, res) => {
   res.end(JSON.stringify(result));
 });
 
-function sendHistogram(svgFile, datasetId, res, highlightProteinId) {
-  fs.readFile(svgFile, { encoding: 'utf8' }, (err, data) => {
-    if (err) {
-      var abundancesMap = dataset.abundances[datasetId]; //map proteinId -> {a : , r: , ..}
-      var abundances = [];
-      for (var proteinId in abundancesMap) {
-        var a = abundancesMap[proteinId].a;
-        if (a >= 0.01) { //otherwise it cannot be plotted
-          abundances.push(a);
-        }
-      }
-      var highlightAbundance = undefined;
-      if (highlightProteinId && highlightProteinId in abundancesMap) {
-        highlightAbundance = abundancesMap[highlightProteinId].a;
-      }
-      var d3n = makeHistogram(abundances, highlightAbundance);
-      res.header('content-type', 'image/svg+xml');
-      res.end(d3n.svgString());
-
-      if (err.code === 'ENOENT') {
-        fs.writeFile(svgFile, d3n.svgString(), (err) => {
-          if (err) log.error(`saving histogram for ${datasetId} - ${svgFile}: ${err.message}`);
-        });
-      }
-    } else {
-      res.header('content-type', 'image/svg+xml');
-      res.end(data);
-    }
-  });
-}
-
-function sendScatter(svgFile, d1, d2, res) {
-  fs.readFile(svgFile, { encoding: 'utf8' }, (err, data) => {
-    if (err) {
-      var s1 = dataset.datasets[d1].filename.split('-')[0];
-      var s2 = dataset.datasets[d2].filename.split('-')[0];
-      var nogs = cladogram.firstCommonAncestor(s1, s2).nogs;
-      var a1 = dataset.abundances[d1]; //map proteinId -> {a : , r: , ..}
-      var a2 = dataset.abundances[d2]; //map proteinId -> {a : , r: , ..}
-      var data = scatter.correlate(a1, a2, nogs)
-      var d3n = scatter.plot(data, dataset.datasets[d1].name, dataset.datasets[d2].name);
-      res.header('content-type', 'image/svg+xml');
-      res.end(d3n.svgString());
-
-      if (err.code === 'ENOENT') {
-        fs.writeFile(svgFile, d3n.svgString(), (err) => {
-          if (err) log.error(`saving scatter for ${d1}/${d2} - ${svgFile}: ${err.message}`);
-        });
-      }
-    } else {
-      res.header('content-type', 'image/svg+xml');
-      res.end(data);
-    }
-  });
-}
-
+log.info('loading dataset module COMPLETE');
 
 module.exports = router;
 //TODO

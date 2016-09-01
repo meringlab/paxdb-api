@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bunyan = require('bunyan');
+const plotter = require('./plotter')
 
 const species = require('../lib/species');
 const log = bunyan.createLogger({
@@ -24,6 +25,35 @@ router.param('species_id', (req, res, next, speciesId) => {
   req.species_id = String(id);
   next();
 
+});
+
+function defaultDataset(datasets) {
+  if (datasets.length === 1) {
+    return datasets[0];
+  }
+  var candidate = datasets.find(e => { return e.integrated && e.organ == 'WHOLE_ORGANISM'} )
+  if (candidate) {
+    return candidate;
+  }
+  candidate = datasets.find(e => { return e.integrated} )
+  if (candidate) {
+    return candidate;
+  }
+  return datasets[0];
+}
+
+router.get('/:species_id/correlate/:dst_species_id', (req, res, next) => {
+  var d1 = defaultDataset(species[req.species_id].datasets).id;
+  var d2 = defaultDataset(species[req.params.dst_species_id].datasets).id;
+  //can't figure out how to forward:
+  // req.url = `/dataset/${d1}/correlate/${d2}`;
+  // req.params['dataset'] = d1;
+  // req.params['dst_dataset_id'] = d2;
+  // next();
+  const minId = Math.min(d1, d2);
+  const maxId = Math.max(d1, d2);
+  const svgFile = `./public/images/scatter/${minId}_${maxId}.svg`;
+  plotter.sendScatter(svgFile, minId, maxId, res);
 });
 
 router.get('/:species_id', (req, res) => {
