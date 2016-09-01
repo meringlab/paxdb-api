@@ -1,5 +1,5 @@
-3rd_libs
-public/build
+public/images/datasets
+public/images/scatter
 bower_components
 
 # Created by .gitignore support plugin (hsz.mobi)
