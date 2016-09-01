@@ -416,23 +416,27 @@ buildDatasetsAsSeparateModules();
  * depends on dataset_data!
  */
 function buildHistograms() {
-  var makeHistogram = require('./lib/histo')
-  const dataset = require('./lib/dataset_data');
+  var makeHistogram = require('./lib/histo');
+  //TODO list ./lib/dataset folder and load each module
+  var glob = require("glob")
 
-  for (var datasetId in dataset.datasets) {
-    var abundancesMap = dataset.abundances[datasetId]; //map proteinId -> {a : , r: , ..}
-    var abundances = [];
-    for(var proteinId in abundancesMap) {
-      var a = abundancesMap[proteinId].a;
-      if (a >= 0.01) { //otherwise it cannot be plotted
-        abundances.push(a);
+  glob('./lib/dataset/*js', (er, files) => {
+    files.forEach(f => {
+      var dataset = require(f);
+      var abundancesMap = dataset.abundances; //map proteinId -> {a : , r: , ..}
+      var abundances = [];
+      for(var proteinId in abundancesMap) {
+        var a = abundancesMap[proteinId].a;
+        if (a >= 0.01) { //otherwise it cannot be plotted
+          abundances.push(a);
+        }
       }
-    }
-    var d3n = makeHistogram(abundances);
-    fs.writeFile(`./public/images/datasets/${datasetId}.svg`, d3n.svgString(), (err) => {
-      if (err) console.log(`${datasetId} failed: ${err.message}`);
-    });
-  }
+      var d3n = makeHistogram(abundances);
+      fs.writeFile(`./public/images/datasets/${dataset.info.id}.svg`, d3n.svgString(), (err) => {
+        if (err) console.log(`${dataset.info.id} failed: ${err.message}`);
+      });
+    })
+  })
 }
 
 // buildHistograms();
