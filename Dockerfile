@@ -1,4 +1,8 @@
 # Version: 0.1
+# to run:
+## $ sudo docker build -t paxdb/api-species .
+## $ sudo docker run --restart=always -p 13001:3000 -d --name paxdb_api_species paxdb/api-species
+#
 FROM meringlab/node5
 MAINTAINER Milan Simonovic <milan.simonovic@imls.uzh.ch>
 
