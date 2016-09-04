@@ -7,7 +7,7 @@ const makeHistogram = require('../lib/histo');
 const scatter = require('../lib/scatter');
 const cladogram = require('../lib/cladogram');
 
-function sendHistogram(svgFile, datasetId, res, highlightProteinId) {
+function sendHistogram(svgFile, datasetId, res, highlightProteinId, thumb) {
   fs.readFile(svgFile, { encoding: 'utf8' }, (err, data) => {
     if (err) {
       var dataset = require(`../lib/dataset/${datasetId}`);
@@ -24,7 +24,7 @@ function sendHistogram(svgFile, datasetId, res, highlightProteinId) {
       if (highlightProteinId && highlightProteinId in abundancesMap) {
         highlightAbundance = abundancesMap[highlightProteinId].a;
       }
-      var d3n = makeHistogram(abundances, highlightAbundance);
+      var d3n = makeHistogram(abundances, highlightAbundance, thumb);
       res.header('content-type', 'image/svg+xml');
       res.end(d3n.svgString());
 

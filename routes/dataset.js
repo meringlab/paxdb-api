@@ -62,8 +62,14 @@ router.get('/:dataset_id/correlate/:dst_dataset_id', (req, res) => {
 
 router.get('/:dataset_id/histogram', (req, res) => {
   var proteinId = req.query.hightlightProteinId;
-  const svgFile = `./public/images/datasets/${req.dataset_id}` + (proteinId ? `_${proteinId}` : '') + '.svg';
-  plotter.sendHistogram(svgFile, req.dataset_id, res, proteinId);
+  var svgFile, thumb = false;
+  if ('thumb' in req.query) {
+    svgFile = `./public/images/datasets/${req.dataset_id}-thumb.svg`;
+    thumb = true;
+  } else {
+    svgFile = `./public/images/datasets/${req.dataset_id}` + (proteinId ? `_${proteinId}` : '') + '.svg';
+  }
+  plotter.sendHistogram(svgFile, req.dataset_id, res, proteinId, thumb);
 });
 
 router.get('/:species_id/:dataset_id', (req, res) => {
