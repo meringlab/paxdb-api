@@ -440,7 +440,7 @@ function buildDatasetsAsSeparateModules() {
 // buildDatasets();
 // buildDatasetsAsSeparateModules();
 // buildProteins();
-buildProteinsAsSeparateModules();
+// buildProteinsAsSeparateModules();
 
 /**
  * depends on dataset_data!
@@ -465,8 +465,12 @@ function buildHistograms() {
       fs.writeFile(`./public/images/datasets/${dataset.info.id}.svg`, d3n.svgString(), (err) => {
         if (err) console.log(`${dataset.info.id} failed: ${err.message}`);
       });
+      var d3n = makeHistogram(abundances, undefined, true);
+      fs.writeFile(`./public/images/datasets/${dataset.info.id}-thumb.svg`, d3n.svgString(), (err) => {
+        if (err) console.log(`${dataset.info.id} failed: ${err.message}`);
+      });
     })
   })
 }
 
-// buildHistograms();
+buildHistograms();
