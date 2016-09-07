@@ -511,7 +511,7 @@ function buildPayload() {
       var hexColor = ranking.toRGB(abundance.r);
       writeStream.write(`${proteins[proteinId].externalId}\t${hexColor}\tAbundance: ${datasetLib.formattedAbundance(abundance.a)}, rank: ${ranking.formatRank(abundance.r)}\t`);
       writeStream.write(`${PAXDB_URL}protein/${proteinId}/${proteins[proteinId].name}\t`);
-      writeStream.write(`${PAXDB_URL}proxy/dataset/${d.id}/histogram?hightlightProteinId=${proteinId}\n`);
+      writeStream.write(`${PAXDB_URL}dataset/${d.id}/histogram?hightlightProteinId=${proteinId}\n`);
     }
     writeStream.end(e=> {
       if (e) console.log(`error writing ${speciesId} payload nodes: ${e.message}`); else console.log(`${speciesId} payload nodes written`)
