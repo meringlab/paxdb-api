@@ -2,6 +2,8 @@
  * Created by milans on 9/8/16.
  */
 
+const PAYLOAD_VERSION = 14;
+const PAXDB_URL = 'http://pax-db.org/';
 const species = require('./lib/species');
 const fs = require('fs');
 const async = require('async');
@@ -473,4 +475,48 @@ function buildHistograms() {
   })
 }
 
-buildHistograms();
+// buildHistograms();
+
+function buildPayload() {
+  const defaultDataset = require('./lib/speciesDefaultDataset');
+  const datasetLib = require('./lib/dataset');
+  const speciesRepo = require('./lib/species');
+
+  // for (var speciesId = 882; speciesId == 882; speciesId = undefined) {
+  for (var speciesId in speciesRepo) {
+    console.log(`writing payload for ${speciesId}`);
+    var species = speciesRepo[speciesId];
+    var writeStream = fs.createWriteStream(`./public/payload/${species.id}-payload-v${PAYLOAD_VERSION}.json`);
+    writeStream.write(`//FILE GENERATED on ${new Date()}, DO NOT MODIFY!\n`);
+    writeStream.write(`{
+      "nodes_file": "${PAXDB_URL}payload/${species.id}-payload-nodes-v${PAYLOAD_VERSION}.txt",
+      "edges_file" : "",
+      "logo_file"  : "${PAXDB_URL}public/images/paxdb_logo.png",
+      "legend_file": "${PAXDB_URL}public/images/payload_legend.png",
+      "name"       : "PaxDB"
+    }`);
+    writeStream.end(e=> {
+      if (e) console.log(`error writing ${speciesId} payload: ${e.message}`); else console.log(`${speciesId} payload written`);
+    });
+
+    var d = defaultDataset(species.datasets);
+    var dataset = require(`./lib/dataset/${d.id}.js`);
+    var proteins = require(`./lib/proteins/${speciesId}.js`);
+    const ranking = new datasetLib.Ranking(dataset.info.num_abundances);
+
+    var writeStream = fs.createWriteStream(`./public/payload/${species.id}-payload-nodes-v${PAYLOAD_VERSION}.txt`);
+    for (var proteinId in dataset.abundances) {
+      //  3702.AT5G51880.1    #B95050 Abundance: 3.96 ppm, rank: 7077. out of 20185   http://archive.pax-db.org/v4.0/#!protein/3702.AT5G51880.1   http://archive.pax-db.org/v4.0/images/proteins_histograms/323_140812-small.png
+      var abundance = dataset.abundances[proteinId];
+      var hexColor = ranking.toRGB(abundance.r);
+      writeStream.write(`${proteins[proteinId].externalId}\t${hexColor}\tAbundance: ${datasetLib.formattedAbundance(abundance.a)}, rank: ${ranking.formatRank(abundance.r)}\t`);
+      writeStream.write(`${PAXDB_URL}protein/${proteinId}/${proteins[proteinId].name}\t`);
+      writeStream.write(`${PAXDB_URL}proxy/dataset/${d.id}/histogram?hightlightProteinId=${proteinId}\n`);
+    }
+    writeStream.end(e=> {
+      if (e) console.log(`error writing ${speciesId} payload nodes: ${e.message}`); else console.log(`${speciesId} payload nodes written`)
+    });
+
+  }
+}
+buildPayload();
