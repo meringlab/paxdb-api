@@ -27,20 +27,7 @@ router.param('species_id', (req, res, next, speciesId) => {
 
 });
 
-function defaultDataset(datasets) {
-  if (datasets.length === 1) {
-    return datasets[0];
-  }
-  var candidate = datasets.find(e => { return e.integrated && e.organ == 'WHOLE_ORGANISM'} )
-  if (candidate) {
-    return candidate;
-  }
-  candidate = datasets.find(e => { return e.integrated} )
-  if (candidate) {
-    return candidate;
-  }
-  return datasets[0];
-}
+const defaultDataset = require('../lib/speciesDefaultDataset');
 
 router.get('/:species_id/correlate/:dst_species_id', (req, res, next) => {
   var d1 = defaultDataset(species[req.species_id].datasets).id;
