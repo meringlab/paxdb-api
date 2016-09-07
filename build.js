@@ -2,7 +2,7 @@
  * Created by milans on 9/8/16.
  */
 
-const PAYLOAD_VERSION = 14;
+const PAYLOAD_VERSION = 15;
 const PAXDB_URL = 'http://pax-db.org/';
 const species = require('./lib/species');
 const fs = require('fs');

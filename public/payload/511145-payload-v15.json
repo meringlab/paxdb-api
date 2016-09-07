@@ -1,0 +1,8 @@
+//FILE GENERATED on Wed Sep 07 2016 12:31:57 GMT+0200 (CEST), DO NOT MODIFY!
+{
+      "nodes_file": "http://pax-db.org/payload/511145-payload-nodes-v15.txt",
+      "edges_file" : "",
+      "logo_file"  : "http://pax-db.org/public/images/paxdb_logo.png",
+      "legend_file": "http://pax-db.org/public/images/payload_legend.png",
+      "name"       : "PaxDB"
+    }
