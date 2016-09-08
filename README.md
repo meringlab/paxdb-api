@@ -1,17 +1,6 @@
 This is the [pax-db.org][http://pax-db.org] species storage microservice.
 
-# Current Status
-
-There is an email discussion list
-[pax-db@googlegroups.com](mailto:pax-db@googlegroups.com),
-also [as a forum in the
-browser](https://groups.google.com/forum/#!forum/pax-db).
-
-
 # Installation
-
-   
-
 
 # Versioning
 
@@ -31,11 +20,11 @@ MIT. See "LICENSE.txt".
 To create the image `paxdb/species`, execute the following command:
 
 ```
-$ docker build -t paxdb/species .
+$ docker build -t paxdb/api-species .
 ```
 
 ### Run the image
 
 ```
-$ docker run -d --name paxdb-species paxdb/species
+$ docker run --restart=always -P -d --name paxdb_api_species paxdb/api-species
 ```
