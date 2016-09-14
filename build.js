@@ -487,7 +487,6 @@ function buildPayload() {
     console.log(`writing payload for ${speciesId}`);
     var species = speciesRepo[speciesId];
     var writeStream = fs.createWriteStream(`./public/payload/${species.id}-payload-v${PAYLOAD_VERSION}.json`);
-    writeStream.write(`//FILE GENERATED on ${new Date()}, DO NOT MODIFY!\n`);
     writeStream.write(`{
       "nodes_file": "${PAXDB_URL}payload/${species.id}-payload-nodes-v${PAYLOAD_VERSION}.txt",
       "edges_file" : "",
