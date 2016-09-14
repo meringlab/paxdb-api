@@ -490,8 +490,8 @@ function buildPayload() {
     writeStream.write(`{
       "nodes_file": "${PAXDB_URL}payload/${species.id}-payload-nodes-v${PAYLOAD_VERSION}.txt",
       "edges_file" : "",
-      "logo_file"  : "${PAXDB_URL}public/images/paxdb_logo.png",
-      "legend_file": "${PAXDB_URL}public/images/payload_legend.png",
+      "logo_file"  : "${PAXDB_URL}images/paxdb_logo.png",
+      "legend_file": "${PAXDB_URL}images/payload_legend.png",
       "name"       : "PaxDB"
     }`);
     writeStream.end(e=> {
