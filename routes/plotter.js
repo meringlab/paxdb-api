@@ -6,10 +6,19 @@ const fs = require('fs');
 const makeHistogram = require('../lib/histo');
 const scatter = require('../lib/scatter');
 const cladogram = require('../lib/cladogram');
+const bunyan = require('bunyan');
+
+const log = bunyan.createLogger({
+  name: "paxdb-API",
+  module: "plotter"
+  //TODO server / host / process ..
+});
+
 
 function sendHistogram(svgFile, datasetId, res, highlightProteinId, thumb) {
   fs.readFile(svgFile, { encoding: 'utf8' }, (err, data) => {
     if (err) {
+      log.info(`creating histogram ${svgFile}`);
       var dataset = require(`../lib/dataset/${datasetId}`);
 
       var abundancesMap = dataset.abundances; //map proteinId -> {a : , r: , ..}
@@ -32,6 +41,8 @@ function sendHistogram(svgFile, datasetId, res, highlightProteinId, thumb) {
         fs.writeFile(svgFile, d3n.svgString(), (err) => {
           if (err) log.error(`saving histogram for ${datasetId} - ${svgFile}: ${err.message}`);
         });
+      } else {
+        log.error(`failed to read histogram file ${svgFile}: ${err.message}`);
       }
     } else {
       res.header('content-type', 'image/svg+xml');
@@ -43,6 +54,8 @@ function sendHistogram(svgFile, datasetId, res, highlightProteinId, thumb) {
 function sendScatter(svgFile, d1, d2, res) {
   fs.readFile(svgFile, { encoding: 'utf8' }, (err, data) => {
     if (err) {
+      log.info(`creating scatter ${svgFile}`);
+
       var dataset1 = require(`../lib/dataset/${d1}`);
       var dataset2 = require(`../lib/dataset/${d2}`);
 
@@ -53,19 +66,43 @@ function sendScatter(svgFile, d1, d2, res) {
       var a2 = dataset2.abundances; //map proteinId -> {a : , r: , ..}
       var data = scatter.correlate(a1, a2, nogs);
       var d3n = scatter.plot(data, dataset1.info.name, dataset2.info.name);
-      res.header('content-type', 'image/svg+xml');
-      res.end(d3n.svgString());
 
       if (err.code === 'ENOENT') {
         fs.writeFile(svgFile, d3n.svgString(), (err) => {
           if (err) log.error(`saving scatter for ${d1}/${d2} - ${svgFile}: ${err.message}`);
         });
+      } else {
+        log.error(`failed to read scatter file ${svgFile}: ${err.message}`);
+      }
+      if (res) {
+        res.header('content-type', 'image/svg+xml');
+        res.end(d3n.svgString());
+
       }
     } else {
-      res.header('content-type', 'image/svg+xml');
-      res.end(data);
+      if (res) {
+        res.header('content-type', 'image/svg+xml');
+        res.end(data);
+      }
     }
   });
 }
 module.exports.sendHistogram = sendHistogram;
 module.exports.sendScatter = sendScatter;
+
+// var glob = require("glob")
+//
+// glob('./lib/dataset/*js', (er, files) => {
+//   for (let i = 0; i < files.length - 1; i++) {
+//     let d1 = files[i].replace('./lib/dataset/', '').split('.')[0];
+//     for (let j = i + 1; j < files.length; j++) {
+//       let d2 = files[j].replace('./lib/dataset/', '').split('.')[0];
+//       let svgFile = `./public/images/scatter/${d1}_${d2}.svg`;
+//       try {
+//         sendScatter(svgFile, d1, d2);
+//       } catch (err) {
+//         console.log(`failed to correlate ${d1} and ${d2}: ${err}`);
+//       }
+//     }
+//   }
+// });
