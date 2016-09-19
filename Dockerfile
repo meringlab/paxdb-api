@@ -3,8 +3,19 @@
 ## $ sudo docker build -t paxdb/api-species .
 ## $ sudo docker run --restart=always -p 13001:3000 -d --name paxdb_api_species paxdb/api-species
 #
-FROM meringlab/node5
+FROM       ubuntu:trusty
 MAINTAINER Milan Simonovic <milan.simonovic@imls.uzh.ch>
+
+
+# To compile and install native addons from npm,
+# build tools might be needed:
+RUN sudo apt-get update
+RUN sudo apt-get install -y libc-dev build-essential curl python
+
+RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+# will also install npm v3.x:
+RUN apt-get install -y nodejs
+
 
 ENV WD /var/www/paxdb
 WORKDIR  $WD
