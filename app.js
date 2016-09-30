@@ -50,5 +50,11 @@ app.use(function(err, req, res, next) {
   });
 });
 
+process.on('uncaughtException', (err) => {
+  //TODO test this
+  logger.fatal(err, 'uncaughtException');
+  //TODO  if(process.env.NODE_ENV === 'production') { sendEmail? twilio?
+  process.exit(1);
+});
 
 module.exports = app;
