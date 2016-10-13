@@ -16,6 +16,7 @@ RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 # will also install npm v3.x:
 RUN apt-get install -y nodejs
 
+RUN sudo apt-get install -y git
 
 ENV WD /var/www/paxdb
 WORKDIR  $WD
