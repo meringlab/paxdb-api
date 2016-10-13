@@ -15,6 +15,7 @@ const log = bunyan.createLogger({
 });
 
 router.get('/', (req, res) => {
+  log.info({query : req.query.ids});
   var ids = req.query.ids.split(',').map(i => {return parseInt(i, 10)});
   for (var i = 0; i < ids.length; i++) {
     if (!(ids[i] in speciesForProtein)) {
