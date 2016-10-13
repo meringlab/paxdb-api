@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
   for (var i = 0; i < ids.length; i++) {
     if (!(ids[i] in speciesForProtein)) {
       res.status(404);
-      res.render('error', { message: `Unknown protein: ${id}` });
+      res.render('error', { message: `Unknown protein: ${ids[i]}` });
       return;
     }
   }
