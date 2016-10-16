@@ -7,6 +7,12 @@ var dataset = require('./routes/dataset');
 var protein = require('./routes/protein');
 var proteins = require('./routes/proteins');
 
+const logger = require('bunyan').createLogger({
+  name: "paxdb-API",
+  module: "app"
+  //TODO server / host / process ..
+});
+
 var app = express();
 
 // view engine setup
