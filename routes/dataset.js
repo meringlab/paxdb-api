@@ -36,6 +36,11 @@ router.param('species_id', (req, res, next, speciesId) => {
 
 router.param('dataset_id', (req, res, next, datasetId) => {
   var id = parseInt(datasetId, 10);
+  if (id != datasetId) {
+    res.status(404);
+    res.render('error', { message: `Unknown dataset: ${datasetId}` });
+    return;
+  }
   log.debug({ datasetId, id });
   var dataset;
   try {
