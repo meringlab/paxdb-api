@@ -46,8 +46,7 @@ router.param('dataset_id', (req, res, next, datasetId) => {
     return;
   }
   // once validation is done save the new item in the req
-  req.dataset_id = datasetId;
-  //TODO cache this
+  req.dataset_id = id.toString();
   req.dataset = dataset;
   next();
 
