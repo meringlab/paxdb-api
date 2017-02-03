@@ -3,7 +3,7 @@
 ## $ sudo docker build -t paxdb/api-species .
 ## $ sudo docker run --restart=always -p 13001:3000 -d --name paxdb_api_species paxdb/api-species
 #
-FROM       ubuntu:trusty
+FROM       ubuntu:xenial
 MAINTAINER Milan Simonovic <milan.simonovic@imls.uzh.ch>
 
 
@@ -12,7 +12,7 @@ MAINTAINER Milan Simonovic <milan.simonovic@imls.uzh.ch>
 RUN sudo apt-get update
 RUN sudo apt-get install -y libc-dev build-essential curl python
 
-RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
 # will also install npm v3.x:
 RUN apt-get install -y nodejs
 
