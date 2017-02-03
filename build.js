@@ -458,15 +458,13 @@ function build_proteins_index(){
   //IMPORTANT: this assumes the linkins file has all the paxdb species!
 
   let currentSpecies = undefined, proteins = undefined;
-  const uniprotLinkins = fs.readFileSync('./data/string_uniprot_linkins_ids.tsv', 'utf-8');
+  const uniprotLinkins = fs.readFileSync('./data/paxdb_uniprot_linkins_ids.tsv', 'utf-8');
   let exportedSpecies = new Set();
   uniprotLinkins.split("\n").forEach((line) => {
     if (line) {
       let rec = line.trim().split('\t');
       let speciesId = rec[0].split('.')[0];
-      if (!(speciesId in species)) { //skip non-paxdb species (majority)
-        return;
-      }
+
       if (currentSpecies != speciesId) {
         console.log(`found species ${speciesId}: ${species[speciesId].name}`);
         exportedSpecies.add(speciesId);
