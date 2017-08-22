@@ -11,8 +11,7 @@ const log = bunyan.createLogger({
 
 log.info('loading dataset module');
 
-const plotter = require('./plotter')
-const cladogram = require('../lib/cladogram')
+const plotter = require('./plotter');
 const species = require('../lib/species');
 //lazy init on access
 const proteinsByNameAsc = {};
