@@ -36,7 +36,6 @@ RUN npm install
 EXPOSE 3000
 
 # DEFAULTS, override when creating a container:
-ENV CONSUL_HOST 'tethys.meringlab.org'
 ENV NODE_ENV production
 
 ENV SERVICE_TAGS "paxdb,api"
