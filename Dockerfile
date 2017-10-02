@@ -1,4 +1,4 @@
-# Version: 0.1
+# Version: 0.2
 # to run:
 ## $ sudo docker build -t paxdb/api-species .
 ### for testing:
@@ -9,28 +9,17 @@
 ### docker-machine env swarm master then:
 ## $ docker service update --image docker-registry.meringlab.org:5443/paxdb/api:blue  paxdb_api_species_4
 ### see https://docs.docker.com/engine/swarm/swarm-tutorial/rolling-update/
-FROM       ubuntu:xenial
+FROM       node:6-alpine
 MAINTAINER Milan Simonovic <milan.simonovic@imls.uzh.ch>
 
 
 # To compile and install native addons from npm,
 # build tools might be needed:
-RUN sudo apt-get update
-RUN sudo apt-get install -y libc-dev build-essential curl python
-
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
-# will also install npm v3.x:
-RUN apt-get install -y nodejs
-
-RUN apt-get install -y git
 
 ENV WD /var/www/paxdb
-WORKDIR  $WD
 COPY . $WD
+WORKDIR  $WD
 
-RUN useradd -ms /bin/bash paxdb
-RUN chown -R paxdb /var/www/paxdb
-USER paxdb
 RUN npm install
 
 EXPOSE 3000
@@ -39,8 +28,6 @@ EXPOSE 3000
 ENV NODE_ENV production
 
 ENV SERVICE_TAGS "paxdb,api"
-ENV SERVICE_NAME species_v4.0
-
-# VOLUME $WD
+ENV SERVICE_NAME species_v4.1
 
 CMD ["node", "--max-old-space-size=2048", "./bin/www"]
