@@ -1,0 +1,7 @@
+{
+      "nodes_file": "http://pax-db.org/payload/272623-payload-nodes-v16.txt",
+      "edges_file" : "",
+      "logo_file"  : "http://pax-db.org/images/paxdb_logo.png",
+      "legend_file": "http://pax-db.org/images/payload_legend.png",
+      "name"       : "PaxDB"
+    }
