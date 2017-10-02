@@ -13,7 +13,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "test": "mocha test/*.js integration_test/*.js",
-    "lint": "./node_modules/eslint/bin/eslint.js app.js bin/ lib/ routes/"
+    "lint": "./node_modules/eslint/bin/eslint.js app.js bin/ lib/*js routes/"
   },
   "dependencies": {
     "async": "^2.0.1",
