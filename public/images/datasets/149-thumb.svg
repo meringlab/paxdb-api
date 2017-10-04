@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="160"><defs><style type="text/css"><![CDATA[ 
+.bar rect {
+  fill-opacity: 0;
+  stroke:       black;
+  stroke-width: 0.5;
+}
+
+.highlight rect {
+  fill:       red;
+  fill-opacity: 1;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+ ]]></style></defs><g transform="translate(50,10)"><g class="bar" transform="translate(0,104.67)"><rect x="1" width="11.5" height="15.329999999999998"></rect></g><g class="bar" transform="translate(12.5,98.19)"><rect x="1" width="11.5" height="21.810000000000002"></rect></g><g class="bar" transform="translate(25,96.45)"><rect x="1" width="11.5" height="23.549999999999997"></rect></g><g class="bar" transform="translate(37.5,73.68)"><rect x="1" width="11.5" height="46.31999999999999"></rect></g><g class="bar" transform="translate(50,11.64)"><rect x="1" width="11.5" height="108.36"></rect></g><g class="bar" transform="translate(62.5,0)"><rect x="1" width="11.5" height="120"></rect></g><g class="bar" transform="translate(75,38.34)"><rect x="1" width="11.5" height="81.66"></rect></g><g class="bar" transform="translate(87.5,63.69)"><rect x="1" width="11.5" height="56.31"></rect></g><g class="bar" transform="translate(100,88.83)"><rect x="1" width="11.5" height="31.17"></rect></g><g class="bar" transform="translate(112.5,108.42)"><rect x="1" width="11.5" height="11.579999999999998"></rect></g><g class="bar" transform="translate(125,116.19)"><rect x="1" width="11.5" height="3.8100000000000023"></rect></g><g class="bar" transform="translate(137.5,118.98)"><rect x="1" width="11.5" height="1.019999999999996"></rect></g><g class="bar" transform="translate(150,119.94)"><rect x="1" width="11.5" height="0.060000000000002274"></rect></g><g class="bar" transform="translate(162.5,119.97)"><rect x="1" width="11.5" height="0.030000000000001137"></rect></g><g class="bar" transform="translate(175,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(187.5,120)"><rect x="1" width="11.5" height="0"></rect></g></g></svg>

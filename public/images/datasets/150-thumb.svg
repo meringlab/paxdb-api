@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="160"><defs><style type="text/css"><![CDATA[ 
+.bar rect {
+  fill-opacity: 0;
+  stroke:       black;
+  stroke-width: 0.5;
+}
+
+.highlight rect {
+  fill:       red;
+  fill-opacity: 1;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+ ]]></style></defs><g transform="translate(50,10)"><g class="bar" transform="translate(0,120)"><rect x="1" width="24" height="0"></rect></g><g class="bar" transform="translate(25,120)"><rect x="1" width="24" height="0"></rect></g><g class="bar" transform="translate(50,119.58041958041959)"><rect x="1" width="24" height="0.4195804195804129"></rect></g><g class="bar" transform="translate(75,89.37062937062937)"><rect x="1" width="24" height="30.629370629370626"></rect></g><g class="bar" transform="translate(100,0)"><rect x="1" width="24" height="120"></rect></g><g class="bar" transform="translate(125,80.55944055944056)"><rect x="1" width="24" height="39.44055944055944"></rect></g><g class="bar" transform="translate(150,117.6923076923077)"><rect x="1" width="24" height="2.3076923076923066"></rect></g><g class="bar" transform="translate(175,119.79020979020979)"><rect x="1" width="24" height="0.20979020979021357"></rect></g></g></svg>

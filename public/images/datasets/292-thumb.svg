@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="160"><defs><style type="text/css"><![CDATA[ 
+.bar rect {
+  fill-opacity: 0;
+  stroke:       black;
+  stroke-width: 0.5;
+}
+
+.highlight rect {
+  fill:       red;
+  fill-opacity: 1;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+ ]]></style></defs><g transform="translate(50,10)"><g class="bar" transform="translate(0,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(12.5,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(25,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(37.5,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(50,119.63753523962949)"><rect x="1" width="11.5" height="0.3624647603705142"></rect></g><g class="bar" transform="translate(62.5,119.42005638340717)"><rect x="1" width="11.5" height="0.5799436165928284"></rect></g><g class="bar" transform="translate(75,115.31212243254129)"><rect x="1" width="11.5" height="4.687877567458713"></rect></g><g class="bar" transform="translate(87.5,62.416431735803464)"><rect x="1" width="11.5" height="57.583568264196536"></rect></g><g class="bar" transform="translate(100,0)"><rect x="1" width="11.5" height="120"></rect></g><g class="bar" transform="translate(112.5,118.79178413209827)"><rect x="1" width="11.5" height="1.2082158679017283"></rect></g><g class="bar" transform="translate(125,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(137.5,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(150,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(162.5,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(175,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(187.5,120)"><rect x="1" width="11.5" height="0"></rect></g></g></svg>

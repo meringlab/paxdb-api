@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="160"><defs><style type="text/css"><![CDATA[ 
+.bar rect {
+  fill-opacity: 0;
+  stroke:       black;
+  stroke-width: 0.5;
+}
+
+.highlight rect {
+  fill:       red;
+  fill-opacity: 1;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+ ]]></style></defs><g transform="translate(50,10)"><g class="bar" transform="translate(0,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(12.5,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(25,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(37.5,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(50,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(62.5,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(75,119.29549902152642)"><rect x="1" width="11.5" height="0.7045009784735754"></rect></g><g class="bar" transform="translate(87.5,0)"><rect x="1" width="11.5" height="120"></rect></g><g class="bar" transform="translate(100,37.573385518590996)"><rect x="1" width="11.5" height="82.426614481409"></rect></g><g class="bar" transform="translate(112.5,49.08023483365949)"><rect x="1" width="11.5" height="70.91976516634051"></rect></g><g class="bar" transform="translate(125,81.01761252446184)"><rect x="1" width="11.5" height="38.98238747553816"></rect></g><g class="bar" transform="translate(137.5,108.2583170254403)"><rect x="1" width="11.5" height="11.741682974559694"></rect></g><g class="bar" transform="translate(150,117.65166340508806)"><rect x="1" width="11.5" height="2.3483365949119417"></rect></g><g class="bar" transform="translate(162.5,119.53033268101761)"><rect x="1" width="11.5" height="0.46966731898238834"></rect></g><g class="bar" transform="translate(175,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(187.5,120)"><rect x="1" width="11.5" height="0"></rect></g></g></svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="160"><defs><style type="text/css"><![CDATA[ 
+.bar rect {
+  fill-opacity: 0;
+  stroke:       black;
+  stroke-width: 0.5;
+}
+
+.highlight rect {
+  fill:       red;
+  fill-opacity: 1;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+ ]]></style></defs><g transform="translate(50,10)"><g class="bar" transform="translate(0,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(12.5,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(25,119.7696)"><rect x="1" width="11.5" height="0.23040000000000305"></rect></g><g class="bar" transform="translate(37.5,118.656)"><rect x="1" width="11.5" height="1.343999999999994"></rect></g><g class="bar" transform="translate(50,100.72319999999999)"><rect x="1" width="11.5" height="19.27680000000001"></rect></g><g class="bar" transform="translate(62.5,21.311999999999998)"><rect x="1" width="11.5" height="98.688"></rect></g><g class="bar" transform="translate(75,0)"><rect x="1" width="11.5" height="120"></rect></g><g class="bar" transform="translate(87.5,69.2736)"><rect x="1" width="11.5" height="50.7264"></rect></g><g class="bar" transform="translate(100,90.7392)"><rect x="1" width="11.5" height="29.260800000000003"></rect></g><g class="bar" transform="translate(112.5,100.608)"><rect x="1" width="11.5" height="19.391999999999996"></rect></g><g class="bar" transform="translate(125,112.704)"><rect x="1" width="11.5" height="7.2960000000000065"></rect></g><g class="bar" transform="translate(137.5,118.9248)"><rect x="1" width="11.5" height="1.0751999999999953"></rect></g><g class="bar" transform="translate(150,119.9616)"><rect x="1" width="11.5" height="0.03839999999999577"></rect></g><g class="bar" transform="translate(162.5,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(175,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(187.5,120)"><rect x="1" width="11.5" height="0"></rect></g></g></svg>

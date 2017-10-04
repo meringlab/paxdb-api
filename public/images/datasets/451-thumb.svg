@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="160"><defs><style type="text/css"><![CDATA[ 
+.bar rect {
+  fill-opacity: 0;
+  stroke:       black;
+  stroke-width: 0.5;
+}
+
+.highlight rect {
+  fill:       red;
+  fill-opacity: 1;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+ ]]></style></defs><g transform="translate(50,10)"><g class="bar" transform="translate(0,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(12.5,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(25,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(37.5,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(50,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(62.5,119.15949569741845)"><rect x="1" width="11.5" height="0.8405043025815502"></rect></g><g class="bar" transform="translate(75,115.43726235741445)"><rect x="1" width="11.5" height="4.562737642585546"></rect></g><g class="bar" transform="translate(87.5,71.46688012807685)"><rect x="1" width="11.5" height="48.53311987192315"></rect></g><g class="bar" transform="translate(100,0)"><rect x="1" width="11.5" height="120"></rect></g><g class="bar" transform="translate(112.5,118.84730838503101)"><rect x="1" width="11.5" height="1.1526916149689868"></rect></g><g class="bar" transform="translate(125,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(137.5,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(150,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(162.5,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(175,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(187.5,120)"><rect x="1" width="11.5" height="0"></rect></g></g></svg>
