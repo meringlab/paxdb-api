@@ -12,20 +12,17 @@
 FROM       node:6-alpine
 MAINTAINER Milan Simonovic <milan.simonovic@imls.uzh.ch>
 
-
-# To compile and install native addons from npm,
-# build tools might be needed:
-
-ENV WD /var/www/paxdb
-COPY . $WD
-WORKDIR  $WD
-
-RUN npm install
-
 EXPOSE 3000
 
 # DEFAULTS, override when creating a container:
 ENV NODE_ENV production
+
+ENV WD /var/www/paxdb
+WORKDIR  $WD
+# trick: avoid npm install
+COPY package.json .
+RUN npm install
+COPY . .
 
 ENV SERVICE_TAGS "paxdb,api"
 ENV SERVICE_NAME species_v4.1
