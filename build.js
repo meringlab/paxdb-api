@@ -238,26 +238,29 @@ function loadDatasetInfo(cb) {
 function loadGenomeSources(callback) {
   const input = fs.createReadStream('./data/eggnog4_genome_linkout.txt');
   const rl = readline.createInterface({ input })
-  const sources = {}
+  const sources = {};
+  const versions = {};
 
   rl.on('close', function() {
-    callback(sources);
+    callback(sources, versions);
   });
 
   rl.on('line', function(line) {
     const rec = line.split('\t');
     if (rec.length > 4) {
       sources[parseInt(rec[1])] = `<a href='${rec[4]}'>${rec[2]}</a>`;
+      versions[parseInt(rec[1])] = rec[3];
     }
   });
 }
 
 function buildSpecies() {
-  loadGenomeSources(function(sources) {
+  loadGenomeSources(function(sources, sourcesVersions) {
 
     loadSpeciesInfo(function(species) {
       for (var s in species) {
         species[s].genome_source = sources[s];
+        species[s].genome_source_version = sourcesVersions[s];
       }
 
       loadDatasetInfo(function(datasets, proteinsCovered) {
