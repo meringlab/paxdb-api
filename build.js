@@ -2,9 +2,9 @@
  * Created by milans on 9/8/16.
  */
 
-const PAYLOAD_VERSION = 16;
+const PAYLOAD_VERSION = 17;
 const uniprotMappingFile = './data/paxdb_uniprot_linkins_ids.tsv';
-const PAXDB_URL = 'http://pax-db.org/';
+const PAXDB_URL = 'https://pax-db.org/';
 const fs = require('fs');
 const async = require('async');
 const pg = require('pg');
