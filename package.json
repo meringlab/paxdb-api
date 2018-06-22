@@ -13,7 +13,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "test": "mocha test/*.js integration_test/*.js",
-    "lint": "eslint app.js bin/ routes/"
+    "lint": "eslint app.js bin/ routes/ lib/cladogram.js"
   },
   "dependencies": {
     "async": "^2.0.1",
