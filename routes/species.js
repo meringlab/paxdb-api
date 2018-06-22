@@ -1,18 +1,18 @@
 const express = require('express');
-const router = express.Router();
+const router = new express.Router();
 const bunyan = require('bunyan');
-const plotter = require('./plotter')
+const plotter = require('./plotter');
 
 const species = require('../lib/species');
 const log = bunyan.createLogger({
-    name: "paxdb-API",
-    module: "species"
+  name: 'paxdb-API',
+  module: 'species'
     //TODO server / host / process ..
 });
 
 //TODO allow species names (and synonyms
 router.param('species_id', (req, res, next, speciesId) => {
-  var id = parseInt(speciesId, 10);
+  const id = parseInt(speciesId, 10);
   log.debug({ speciesId, id });
 
   if (!(String(id) in species)) {
@@ -24,14 +24,13 @@ router.param('species_id', (req, res, next, speciesId) => {
   // once validation is done save the new item in the req
   req.species_id = String(id);
   next();
-
 });
 
 const defaultDataset = require('../lib/speciesDefaultDataset');
 
-router.get('/:species_id/correlate/:dst_species_id', (req, res, next) => {
-  var d1 = defaultDataset(species[req.species_id].datasets).id;
-  var d2 = defaultDataset(species[req.params.dst_species_id].datasets).id;
+router.get('/:species_id/correlate/:dst_species_id', (req, res) => {
+  const d1 = defaultDataset(species[req.species_id].datasets).id;
+  const d2 = defaultDataset(species[req.params.dst_species_id].datasets).id;
   //can't figure out how to forward:
   // req.url = `/dataset/${d1}/correlate/${d2}`;
   // req.params['dataset'] = d1;
