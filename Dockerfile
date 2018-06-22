@@ -9,7 +9,7 @@
 ### docker-machine env swarm master then:
 ## $ docker service update --image docker-registry.meringlab.org:5443/paxdb/api:blue  paxdb_api_species_4
 ### see https://docs.docker.com/engine/swarm/swarm-tutorial/rolling-update/
-FROM       node:6-alpine
+FROM       node:8-alpine
 MAINTAINER Milan Simonovic <milan.simonovic@imls.uzh.ch>
 
 EXPOSE 3000
