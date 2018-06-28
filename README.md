@@ -1,4 +1,4 @@
-![drone.io build status][http://drone.meringlab.org/api/badges/meringlab/paxdb-api/status.svg]
+[![drone.io build status](http://drone.meringlab.org/api/badges/meringlab/paxdb-api/status.svg])](http://drone.meringlab.org/meringlab/paxdb-api)
 
 This is the [pax-db.org][http://pax-db.org] species storage microservice.
 
