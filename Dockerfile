@@ -21,10 +21,12 @@ ENV WD /var/www/paxdb
 WORKDIR  $WD
 # trick: avoid npm install
 COPY package.json .
+# make npm install only fetch packages required for production:
+ENV NODE_ENV "production"
 RUN npm install
 COPY . .
 
 ENV SERVICE_TAGS "paxdb,api"
-ENV SERVICE_NAME species_v4.1
+ENV SERVICE_NAME "species_v4.1"
 
 CMD ["node", "--max-old-space-size=2048", "./bin/www"]
