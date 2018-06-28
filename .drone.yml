@@ -4,3 +4,13 @@ pipeline:
     commands:
       - npm install
       - npm run lint
+
+  publish:
+    image: plugins/docker
+    repo: docker-registry.meringlab.org:5443/paxdb/api
+    registry: docker-registry.meringlab.org:5443
+    auto_tag: true
+
+
+# stable-master pattern
+branches: master
