@@ -1,3 +1,5 @@
+![drone.io build status][http://drone.meringlab.org/api/badges/meringlab/paxdb-api/status.svg]
+
 This is the [pax-db.org][http://pax-db.org] species storage microservice.
 
 # Installation
