@@ -10,6 +10,7 @@ pipeline:
     repo: docker-registry.meringlab.org:5443/paxdb/api
     registry: docker-registry.meringlab.org:5443
     auto_tag: true
+    secrets: [ docker_username, docker_password ]
 
 
 # stable-master pattern
