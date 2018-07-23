@@ -16,10 +16,9 @@
     "lint": "eslint app.js bin/ routes/ lib/cladogram.js"
   },
   "dependencies": {
-    "bunyan": "~1.8",
-    "bunyan-emailstream": "^1.0.2",
-    "d3-node": "~1.0",
+    "bunyan": "^1.8.12",
     "d3": "~4.2",
+    "d3-node": "~1.0",
     "ejs": "~2.6.1",
     "express": "~4.16.3",
     "when": "~3.7"
