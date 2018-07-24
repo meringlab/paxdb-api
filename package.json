@@ -3,6 +3,7 @@
   "version": "4.1.0",
   "author": "Milan Simonovic <milan.simonovic@uzh.ch>",
   "license": "MIT",
+  "description": "pax-db.org species API (species, proteins, datasets)",
   "repository": {
     "type": "git",
     "url": "https://github.com/paxdb/api-species"
