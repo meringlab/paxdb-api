@@ -5,8 +5,8 @@
  */
 const bunyan = require('bunyan');
 
-const app = require('../app');
 const http = require('http');
+const app = require('../app');
 
 
 const log = bunyan.createLogger({
@@ -23,7 +23,7 @@ const log = bunyan.createLogger({
 function normalizePort(val) {
   const port = parseInt(val, 10);
 
-  if (isNaN(port)) {
+  if (Number.isNaN(port)) {
     // named pipe
     return val;
   }
@@ -67,11 +67,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(`${bind} requires elevated privileges`);
+      log.fatal(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(`${bind} is already in use`);
+      log.fatal(`${bind} is already in use`);
       process.exit(1);
       break;
     default:
@@ -99,4 +99,3 @@ function onListening() {
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-

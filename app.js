@@ -1,17 +1,18 @@
 const express = require('express');
 const path = require('path');
 
+const logger = require('bunyan').createLogger({
+  name: 'paxdb-API',
+  module: 'app'
+  //TODO server / host / process ..
+});
+
 const routes = require('./routes/index');
 const species = require('./routes/species');
 const dataset = require('./routes/dataset');
 const protein = require('./routes/protein');
 const proteins = require('./routes/proteins');
 
-const logger = require('bunyan').createLogger({
-  name: 'paxdb-API',
-  module: 'app'
-  //TODO server / host / process ..
-});
 
 const app = express();
 

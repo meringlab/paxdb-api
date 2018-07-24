@@ -1,12 +1,11 @@
-/**
- * Created by milans on 31/08/2016.
- */
+/* eslint-disable global-require */
+/* eslint-disable import/no-dynamic-require */
 
 const fs = require('fs');
+const bunyan = require('bunyan');
 const makeHistogram = require('../lib/histo');
 const scatter = require('../lib/scatter');
 const cladogram = require('../lib/cladogram');
-const bunyan = require('bunyan');
 
 const log = bunyan.createLogger({
   name: 'paxdb-API',
@@ -25,12 +24,12 @@ function sendHistogram(svgFile, datasetId, res, highlightProteinId, thumb) {
       const abundances = [];
       // for (var proteinId in abundancesMap) {
       Object.keys(abundancesMap).forEach((proteinId) => {
-        const a = abundancesMap[proteinId].a;
+        const { a } = abundancesMap[proteinId];
         if (a >= 0.01) { //otherwise it cannot be plotted
           abundances.push(a);
         }
       });
-      let highlightAbundance = undefined;
+      let highlightAbundance;
       if (highlightProteinId && highlightProteinId in abundancesMap) {
         highlightAbundance = abundancesMap[highlightProteinId].a;
       }
@@ -62,7 +61,7 @@ function sendScatter(svgFile, d1, d2, res) {
 
       const s1 = dataset1.info.species_id;
       const s2 = dataset2.info.species_id;
-      const nogs = cladogram.firstCommonAncestor(s1, s2).nogs;
+      const { nogs } = cladogram.firstCommonAncestor(s1, s2);
       const a1 = dataset1.abundances; //map proteinId -> {a : , r: , ..}
       const a2 = dataset2.abundances; //map proteinId -> {a : , r: , ..}
       const data = scatter.correlate(a1, a2, nogs);
@@ -79,11 +78,9 @@ function sendScatter(svgFile, d1, d2, res) {
         res.header('content-type', 'image/svg+xml');
         res.end(d3n.svgString());
       }
-    } else {
-      if (res) {
-        res.header('content-type', 'image/svg+xml');
-        res.end(svgFileContents);
-      }
+    } else if (res) {
+      res.header('content-type', 'image/svg+xml');
+      res.end(svgFileContents);
     }
   });
 }

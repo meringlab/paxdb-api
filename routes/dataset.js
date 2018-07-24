@@ -1,6 +1,7 @@
 const express = require('express');
-const router = new express.Router();
 const bunyan = require('bunyan');
+
+const router = new express.Router();
 
 const log = bunyan.createLogger({
   name: 'paxdb-API',
@@ -33,7 +34,7 @@ router.param('species_id', (req, res, next, speciesId) => {
 
 router.param('dataset_id', (req, res, next, datasetId) => {
   const id = parseInt(datasetId, 10);
-  if (id != datasetId) {// eslint-disable-line eqeqeq
+  if (id != datasetId) { // eslint-disable-line eqeqeq
     res.status(404);
     res.render('error', { message: `Unknown dataset: ${datasetId}` });
     return;
@@ -41,6 +42,7 @@ router.param('dataset_id', (req, res, next, datasetId) => {
   log.debug({ datasetId, id });
   let dataset;
   try {
+    // eslint-disable-next-line
     dataset = require(`../lib/dataset/${id}`);
   } catch (e) {
     res.status(404);
@@ -85,6 +87,7 @@ function getProteinsSortedByName(dataset, asc /* true by default*/) {
   //lazy init
   const datasetId = dataset.info.id;
   if (!(datasetId in map)) {
+    // eslint-disable-next-line
     const proteins = require(`../lib/proteins/${dataset.info.species_id}.js`);
     proteinsByNameAsc[datasetId] = Object.keys(dataset.abundances);
     proteinsByNameAsc[datasetId].sort((p1, p2) => {
@@ -108,7 +111,7 @@ router.get('/:species_id/:dataset_id/abundances', (req, res) => {
   const start = parseInt(req.query.start, 10) || 0;
   const end = parseInt(req.query.end, 10) || 10;
 
-  const abundances = req.dataset.abundances;
+  const { abundances } = req.dataset;
   let proteins = req.dataset.abundances_desc;
   if (req.query.sort === 'abundance') { //ascending, descending by default
     proteins = req.dataset.abundances_asc;
@@ -117,8 +120,9 @@ router.get('/:species_id/:dataset_id/abundances', (req, res) => {
   } else if (req.query.sort === '-proteinName') {
     proteins = getProteinsSortedByName(req.dataset, false);
   }
+  // eslint-disable-next-line
   const proteinsData = require(`../lib/proteins/${[req.species_id]}.js`);
-  const result = proteins.slice(start, end).map(id => {
+  const result = proteins.slice(start, end).map((id) => {
     const proteinRec = proteinsData[id];
     return {
       id,

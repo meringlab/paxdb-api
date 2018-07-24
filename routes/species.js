@@ -1,13 +1,13 @@
 const express = require('express');
-const router = new express.Router();
 const bunyan = require('bunyan');
 const plotter = require('./plotter');
-
 const species = require('../lib/species');
+
+const router = new express.Router();
 const log = bunyan.createLogger({
   name: 'paxdb-API',
   module: 'species'
-    //TODO server / host / process ..
+  //TODO server / host / process ..
 });
 
 //TODO allow species names (and synonyms

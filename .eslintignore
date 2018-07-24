@@ -1,8 +1,6 @@
-3rd_libs/
 node_modules/
-public/lib/
-public/sandbox/
+public/javascripts/
 test/
-lib/dataset/
-lib/proteins/
+lib/dataset/**
+lib/proteins/**
 lib/proteins_index.js

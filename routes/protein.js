@@ -1,13 +1,16 @@
+/* eslint-disable global-require */
+/* eslint-disable import/no-dynamic-require */
+
 const express = require('express');
-const router = new express.Router();
 const bunyan = require('bunyan');
 
 const speciesData = require('../lib/species');
 const datasetLib = require('../lib/dataset');
-
 const proteinIndices = require('../lib/proteins_index');
-const speciesForProtein = proteinIndices.speciesForProtein;
-const uniprotIdsMap = proteinIndices.uniprotIdsMap;
+
+const { speciesForProtein, uniprotIdsMap } = proteinIndices;
+
+const router = new express.Router();
 
 const log = bunyan.createLogger({
   name: 'paxdb-API',
@@ -33,7 +36,7 @@ router.param('protein_id', (req, res, next, proteinId) => {
 function renderProtein(req, res) {
   const speciesId = speciesForProtein[req.protein_id];
   const protein = require(`../lib/proteins/${speciesId}`)[req.protein_id];
-  const abundances = speciesData[speciesId].datasets.map(datasetInfo => {
+  const abundances = speciesData[speciesId].datasets.map((datasetInfo) => {
     const dataset = require(`../lib/dataset/${datasetInfo.id}`);
     const abundance = dataset.abundances[req.protein_id];
     const ranking = new datasetLib.Ranking(dataset.info.num_abundances);
