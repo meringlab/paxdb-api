@@ -19,11 +19,19 @@ ENV NODE_ENV production
 
 ENV WD /var/www/paxdb
 WORKDIR  $WD
+
+# --no-cache: download package index on-the-fly, no need to cleanup afterwards
+# --virtual: bundle packages, remove whole bundle at once, when done
+RUN apk update && apk --no-cache --virtual build-dependencies add python make
+
 # trick: avoid npm install
 COPY package.json .
 # make npm install only fetch packages required for production:
 ENV NODE_ENV "production"
 RUN npm install
+
+RUN apk del build-dependencies
+
 COPY . .
 
 ENV SERVICE_TAGS "paxdb,api"
