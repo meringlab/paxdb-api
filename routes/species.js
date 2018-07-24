@@ -2,6 +2,7 @@ const express = require('express');
 const bunyan = require('bunyan');
 const plotter = require('./plotter');
 const species = require('../lib/species');
+const defaultDataset = require('../lib/speciesDefaultDataset');
 
 const router = new express.Router();
 const log = bunyan.createLogger({
@@ -25,8 +26,6 @@ router.param('species_id', (req, res, next, speciesId) => {
   req.species_id = String(id);
   next();
 });
-
-const defaultDataset = require('../lib/speciesDefaultDataset');
 
 router.get('/:species_id/correlate/:dst_species_id', (req, res) => {
   const d1 = defaultDataset(species[req.species_id].datasets).id;
