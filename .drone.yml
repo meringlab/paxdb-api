@@ -13,6 +13,18 @@ pipeline:
     auto_tag: true
     secrets: [ docker_username, docker_password ]
 
+  slack_blame:
+      image: plugins/slack-blame
+      secrets: [ slack_token ]
+      channel: paxdb-build-bot
+      success_template: |
+          paxdb/species-api build is green :) Thanks @{{slack.name}}
+      failure_template: |
+          paxdb/species-api build is broken :( Blame {{slack.name}}
+      when:
+          status: [ failure, success ]
+
+
 
 # stable-master pattern
 branches: master
