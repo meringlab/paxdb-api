@@ -18,9 +18,9 @@ pipeline:
       secrets: [ slack_token ]
       channel: paxdb-build-bot
       success_template: |
-          paxdb/species-api build is green :) Thanks @{{slack.name}}
+          paxdb/species-api build is green :) Thanks {{user.name}}
       failure_template: |
-          paxdb/species-api build is broken :( Blame {{slack.name}}
+          paxdb/species-api build is broken :( Blame {{user.name}}
       when:
           status: [ failure, success ]
 
