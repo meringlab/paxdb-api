@@ -23,6 +23,7 @@ router.get('/', (req, res) => {
   for (let i = 0; i < ids.length; i += 1) {
     if (!(ids[i] in speciesForProtein)) {
       res.status(404);
+      res.set('Content-type', 'application/json');
       res.render('error', { message: `Unknown protein: ${ids[i]}` });
       return;
     }

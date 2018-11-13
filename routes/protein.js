@@ -25,6 +25,7 @@ router.param('protein_id', (req, res, next, proteinId) => {
   //TODO support external ids!
   if (!(id in speciesForProtein)) {
     res.status(404);
+    res.set('Content-type', 'application/json');
     res.render('error', { message: `Unknown protein: ${proteinId}` });
     return;
   }
@@ -63,7 +64,8 @@ router.get('/uniprot/:ac', (req, res) => {
     return;
   }
   res.status(404);
-  res.end(`no protein in paxdb has this uniprot ac ${req.params.ac}`);
+  res.set('Content-type', 'application/json');
+  res.render('error', { message: `no protein in paxdb has this uniprot ac ${req.params.ac}` });
 });
 
 module.exports = router;

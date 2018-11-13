@@ -6,7 +6,6 @@ const router = new express.Router();
 const log = bunyan.createLogger({
   name: 'paxdb-API',
   module: 'dataset'
-  //TODO server / host / process ..
 });
 
 log.info('loading dataset module');
@@ -23,6 +22,7 @@ router.param('species_id', (req, res, next, speciesId) => {
 
   if (!(String(id) in species)) {
     res.status(404);
+    res.set('Content-type', 'application/json');
     res.render('error', { message: `Unknown species: ${speciesId}` });
     return;
   }
@@ -36,6 +36,7 @@ router.param('dataset_id', (req, res, next, datasetId) => {
   const id = parseInt(datasetId, 10);
   if (id != datasetId) { // eslint-disable-line eqeqeq
     res.status(404);
+    res.set('Content-type', 'application/json');
     res.render('error', { message: `Unknown dataset: ${datasetId}` });
     return;
   }
@@ -44,8 +45,20 @@ router.param('dataset_id', (req, res, next, datasetId) => {
   try {
     // eslint-disable-next-line
     dataset = require(`../lib/dataset/${id}`);
+    if (req.species_id !== String(dataset.info.species_id)) {
+      res.status(400);
+      const suggestPath = req.originalUrl.replace(req.species_id, dataset.info.species_id);
+      const suggestUrl = `${req.protocol}://${req.get('host')}${suggestPath}`;
+      let message = `Dataset '${dataset.info.name}' does not belong to species ${req.species_id}`;
+      message = `${message}, perhaps you wanted to ask for ${suggestUrl}`;
+      res.set('Location', suggestUrl);
+      res.set('Content-type', 'application/json');
+      res.render('error', { message });
+      return;
+    }
   } catch (e) {
     res.status(404);
+    res.set('Content-type', 'application/json');
     res.render('error', { message: `Unknown dataset: ${datasetId}` });
     return;
   }
@@ -76,8 +89,9 @@ router.get('/:dataset_id/histogram', (req, res) => {
 });
 
 router.get('/:species_id/:dataset_id', (req, res) => {
-  res.header('content-type', 'application/json');
-  res.end(JSON.stringify(req.dataset.info));
+  // res.header('content-type', 'application/json');
+  // res.end(JSON.stringify(req.dataset.info));
+  res.json(req.dataset.info);
 });
 
 function getProteinsSortedByName(dataset, asc /* true by default*/) {
@@ -122,18 +136,20 @@ router.get('/:species_id/:dataset_id/abundances', (req, res) => {
   }
   // eslint-disable-next-line
   const proteinsData = require(`../lib/proteins/${[req.species_id]}.js`);
-  const result = proteins.slice(start, end).map((id) => {
-    const proteinRec = proteinsData[id];
-    return {
-      id,
-      abundance: abundances[id].a,
-      rank: abundances[id].r,
-      name: proteinRec.name,
-      annotation: proteinRec.annotation
-    };
-  });
-  res.header('content-type', 'application/json');
-  res.end(JSON.stringify(result));
+  const result = proteins.slice(start, end)
+    .map((id) => {
+      const proteinRec = proteinsData[id];
+      return {
+        id,
+        abundance: abundances[id].a,
+        rank: abundances[id].r,
+        name: proteinRec.name,
+        annotation: proteinRec.annotation
+      };
+    });
+  // res.header('content-type', 'application/json');
+  // res.end(JSON.stringify(result));
+  res.json(result);
 });
 
 log.info('loading dataset module COMPLETE');

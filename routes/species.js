@@ -18,6 +18,7 @@ router.param('species_id', (req, res, next, speciesId) => {
 
   if (!(String(id) in species)) {
     res.status(404);
+    res.set('Content-type', 'application/json');
     res.render('error', { message: `Unknown species: ${speciesId}` });
     return;
   }
@@ -42,8 +43,7 @@ router.get('/:species_id/correlate/:dst_species_id', (req, res) => {
 });
 
 router.get('/:species_id', (req, res) => {
-  res.header('content-type', 'application/json');
-  res.end(JSON.stringify(species[req.species_id]));
+  res.json(species[req.species_id]);
 });
 
 module.exports = router;
