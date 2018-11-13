@@ -14,7 +14,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "test": "mocha test/integration.js",
-    "lint": "eslint app.js bin/* routes/* lib/cladogram.js"
+      "lint": "eslint app.js bin/* routes/* lib/cladogram.js lib/dataset.js lib/histo.js lib/speciesDefaultDataset.js",
+      "validate": "npm ls"
   },
   "dependencies": {
     "bunyan": "^1.8.12",
@@ -36,10 +37,14 @@
     "eslint-plugin-react": "^7.10.0",
     "glob": "^5.0.13",
     "mocha": "*",
+      "precommit-hook": "latest",
     "pg": "^6.0.3",
     "supertest": "^3.1.0"
   },
   "engines": {
     "node": "8.x"
-  }
+  },
+    "pre-commit": [
+        "lint"
+    ]
 }

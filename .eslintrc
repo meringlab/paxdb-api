@@ -21,10 +21,10 @@
     // a block without adding a space
     "spaced-comment": 0,
     "no-var": 1,
-    "indent": [
-      2,
-      2,
-      {
+      "indent": [
+          "error",
+          4,
+          {
         "SwitchCase": 1,
         "VariableDeclarator": 2
       }
