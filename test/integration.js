@@ -50,7 +50,7 @@ describe("api", function () {
         .expect('Content-Type', /application\/json.*/)
         .expect(200)
         .then(response => {
-          assert(2 === response.body.length);
+            assert(2 === response.body.proteins.length);
         });
     });
     it('fails for unknown id', function (done) {

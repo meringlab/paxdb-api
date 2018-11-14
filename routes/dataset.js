@@ -43,9 +43,9 @@ router.param('dataset_id', (req, res, next, datasetId) => {
     log.debug({ datasetId, id });
     let dataset;
     try {
-    // eslint-disable-next-line
-    dataset = require(`../lib/dataset/${id}`);
-        if (req.species_id !== String(dataset.info.species_id)) {
+        // eslint-disable-next-line
+        dataset = require(`../lib/dataset/${id}`);
+        if (req.species_id && req.species_id !== String(dataset.info.species_id)) {
             res.status(400);
             const suggestPath = req.originalUrl.replace(req.species_id, dataset.info.species_id);
             const suggestUrl = `${req.protocol}://${req.get('host')}${suggestPath}`;
@@ -101,8 +101,8 @@ function getProteinsSortedByName(dataset, asc /* true by default*/) {
     //lazy init
     const datasetId = dataset.info.id;
     if (!(datasetId in map)) {
-    // eslint-disable-next-line
-    const proteins = require(`../lib/proteins/${dataset.info.species_id}.js`);
+        // eslint-disable-next-line
+        const proteins = require(`../lib/proteins/${dataset.info.species_id}.js`);
         proteinsByNameAsc[datasetId] = Object.keys(dataset.abundances);
         proteinsByNameAsc[datasetId].sort((p1, p2) => {
             if (proteins[p1].name < proteins[p2].name) {
@@ -135,7 +135,7 @@ router.get('/:species_id/:dataset_id/abundances', (req, res) => {
         proteins = getProteinsSortedByName(req.dataset, false);
     }
     // eslint-disable-next-line
-  const proteinsData = require(`../lib/proteins/${[req.species_id]}.js`);
+    const proteinsData = require(`../lib/proteins/${[req.species_id]}.js`);
     const result = proteins.slice(start, end)
         .map((id) => {
             const proteinRec = proteinsData[id];
