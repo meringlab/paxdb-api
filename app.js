@@ -1,5 +1,8 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
+const swaggerUi = require('swagger-ui-express');
+const jsYaml = require('js-yaml');
 
 const logger = require('bunyan')
     .createLogger({
@@ -14,10 +17,19 @@ const dataset = require('./routes/dataset');
 const protein = require('./routes/protein');
 const proteins = require('./routes/proteins');
 
-
 const app = express();
 
-// view engine setup
+try {
+    const v1ApiDoc = fs.readFileSync(path.resolve(__dirname, './lib/paxdb-openapi.yaml'), 'utf8');
+    const apidoc = jsYaml.safeLoad(v1ApiDoc, { json: true });
+    app.use('/v1/swagger-ui', swaggerUi.serve, swaggerUi.setup(apidoc));
+    apidoc.servers.forEach((server) => {
+        logger.info(`swagger-ui mounted at ${server.url}/swagger-ui`);
+    });
+} catch (e) {
+    logger.error('failed to read the api yaml spec', e);
+}
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 

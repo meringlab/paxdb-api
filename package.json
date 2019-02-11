@@ -18,6 +18,9 @@
     "validate": "npm ls"
   },
   "dependencies": {
+    "express-openapi": "~4.3.2",
+    "js-yaml": "^3.12.1",
+    "swagger-ui-express": "^4.0.2",
     "bunyan": "^1.8.12",
     "d3": "~4.2",
     "d3-node": "~1.0",

@@ -1,0 +1,532 @@
+openapi: "3.0.0"
+info:
+    version: "1.0.0"
+    title: PaxDb - species API
+    description: This document describes all available end-points you can use to communicate with the pax-db.org species API endpoint.
+    #  termsOfService: http://swagger.io/terms/ TODO
+    contact:
+        name: Milan Simonovic
+        email: milan.simonovic@imls.uzh.ch
+    license:
+        name: MIT # see https://developer.ebay.com/products/license
+
+servers:
+    #    - url: /v1
+    #      description: local server
+    - url: http://localhost:3000
+      description: local server
+    - url: http://api.pax-db.org
+      description: Production server (uses live data)
+#      variables:
+#          environment:
+#              default: prod
+#              enum:
+#                  - prod    # Production server
+#                  - sandbox # Sandbox server (uses test data)
+# TODO tags https://github.com/OAI/OpenAPI-Specification/blob/master/examples/v3.0/uspto.yaml
+
+paths:
+    /:
+        get:
+            summary: Returns API home page
+            operationId: home
+            responses:
+                '200':
+                    description: Success
+                    content:
+                        text/html:
+                            schema:
+                                type: string
+                default:
+                    description: Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+
+    /species/{speciesId}:
+        get:
+            summary: Returns species
+            operationId: getSpeciesById
+            parameters:
+                - $ref: "#/components/parameters/speciesId"
+            responses:
+                '200':
+                    description: species found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Species"
+
+                # responses may fall through to errors
+                default:
+                    description: Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+
+    /species/{speciesId}/correlate/{targetSpeciesId}:
+        get:
+            summary: correlate two species
+            description: correlate two species by using their default datasets
+            operationId: correlateSpecies
+            parameters:
+                - $ref: "#/components/parameters/speciesId"
+                - name: targetSpeciesId
+                  in: path
+                  description: NCBI taxon
+                  required: true
+                  schema:
+                      type: number
+                  example: 4932
+            responses:
+                '200':
+                    description: a correlation plot
+                    content:
+                        image/svg+xml:
+                            schema:
+                                type: string
+
+                default:
+                    description: Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+
+    /dataset/{speciesId}/{datasetId}:
+        get:
+            summary: Returns dataset
+            operationId: getDatasetById
+            parameters:
+                - $ref: "#/components/parameters/speciesId"
+                - $ref: "#/components/parameters/datasetId"
+            responses:
+                '200':
+                    description: dataset found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Dataset"
+
+                # responses may fall through to errors
+                default:
+                    description: Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+
+    /dataset/{datasetId}/correlate/{targetDatasetId}:
+        get:
+            summary: correlate two datasets
+            operationId: correlateDatasets
+            parameters:
+                - $ref: "#/components/parameters/datasetId"
+                - name: targetDatasetId
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                      minimum: 1
+                  example: 162
+            responses:
+                '200':
+                    description: a correlation plot
+                    content:
+                        image/svg+xml:
+                            schema:
+                                type: string
+
+                default:
+                    description: Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+
+    /dataset/{datasetId}/histogram:
+        get:
+            summary: dataset histogram
+            operationId: plotDatasetHistogram
+            parameters:
+                - $ref: "#/components/parameters/datasetId"
+                - name: hightlightProteinId
+                  in: query
+                  required: false
+                  schema:
+                      type: integer
+                      minimum: 1
+                  example: 1854304
+            responses:
+                '200':
+                    description: Produces a histogram plot. If hightlightProteinId was specified, then the container bin will be coloured.
+                    content:
+                        image/svg+xml:
+                            schema:
+                                type: string
+
+                default:
+                    description: Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+
+    /dataset/{speciesId}/{datasetId}/abundances:
+        get:
+            summary: Returns protein abundances
+            operationId: getDatasetAbundances
+            parameters:
+                - $ref: "#/components/parameters/speciesId"
+                - $ref: "#/components/parameters/datasetId"
+                - name: start
+                  in: query
+                  required: false
+                  schema:
+                      type: integer
+                      minimum: 0
+                      default: 0
+                - name: end
+                  in: query
+                  required: false
+                  schema:
+                      type: integer
+                      minimum: 1
+                      default: 10
+                - name: sort
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                      enum: ['-abundance', 'abundance', 'proteinName', '-proteinName']
+                      default: '-abundance'
+
+            responses:
+                '200':
+                    description: protein abundances
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Abundance"
+
+                # responses may fall through to errors
+                default:
+                    description: Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+
+    /protein/{proteinId}:
+        get:
+            summary: Returns protein
+            operationId: getProteinById
+            parameters:
+                - $ref: "#/components/parameters/proteinId"
+            responses:
+                '200':
+                    description: protein found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Protein"
+
+                # responses may fall through to errors
+                default:
+                    description: Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+
+    /protein/uniprot/{uniprotAc}:
+        get:
+            summary: Returns protein
+            operationId: getProteinByUniprotAC
+            parameters:
+                - name: uniprotAc
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                      example: P02652
+
+            responses:
+                '200':
+                    description: protein found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Protein"
+
+                # responses may fall through to errors
+                default:
+                    description: Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+
+    /proteins:
+        get:
+            summary: Returns proteins
+            operationId: getProteinsByIds
+            parameters:
+                - name: ids
+                  in: query
+                  required: true
+                  schema:
+                      type: string
+                      description: comma-separated list of protein ids, all *MUST* belong to the same species!
+                      example: 1029536,1026543
+            responses:
+                '200':
+                    description: proteins
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    speciesId:
+                                        $ref: "#/components/parameters/speciesId"
+                                    proteins:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                    description: protein id
+                                                    minimum: 1
+                                                externalId:
+                                                    type: string
+                                                    description: string-db.org's protein external id
+                                                name:
+                                                    type: string
+                                                abundances:
+                                                    type: array
+                                                    description: abundances from all the species' datasets for this protein
+                                                    items:
+                                                        type: string
+                                                        description: NA if there's no abundance info in a dataset for this protein
+                                                        example: "47.1 ppm"
+
+                default:
+                    description: Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+
+
+    /apiDocs:
+        get:
+            operationId: getApiDoc
+            description: Returns the requested apiDoc
+            security: []   # No security, publicly accessible
+            parameters:
+                - name: type
+                  in: query
+                  description: The type of apiDoc to return.
+                  schema:
+                      type: string
+                      enum:
+                          - apiDoc
+                          - operationDoc
+            responses:
+                '200':
+                    description: The requested apiDoc.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                default:
+                    description: The requested apiDoc.
+
+
+components:
+    #    TODO links https://github.com/OAI/OpenAPI-Specification/blob/master/examples/v3.0/link-example.yaml
+    schemas:
+        Species:
+            type: object
+            required:
+                - id
+            properties:
+                id:
+                    type: integer
+                    minimum: 1
+                name:
+                    type: string
+                    description: scientific name
+                compact_name:
+                    type: string
+                    description: string-db.org's name
+                num_proteins:
+                    type: integer
+                    minimum: 1
+                genome_source:
+                    type: string
+                    description: a web link to the source
+                genome_source_version:
+                    type: string
+                total_coverage:
+                    type: integer
+                    minimum: 0
+                    description: combined proteins coverage over all datasets
+                average_coverage:
+                    type: integer
+                    minimum: 0
+                    description: average proteins coverage over all datasets
+                datasets:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Dataset"
+        Dataset:
+            type: object
+            required:
+                - id
+            properties:
+                id:
+                    type: integer
+                    minimum: 1
+                name:
+                    type: string
+                organ:
+                    type: string
+                    description: 'sort order (ASC, DESC)'
+                    enum: ['ASC', 'DESC']
+                integrated:
+                    type: boolean
+                    description: true if dataset is an integrated one
+                score:
+                    type: number
+                    format: float
+                    minimum: 0
+                weight:
+                    type: string
+                    description: percentage, paxdb's assigned weight based on dataset's computed quality measure(s)
+                    example: "70%"
+                coverage:
+                    type: integer
+                    minimum: 0
+                    description: percentage, how many proteins of this species have abundance information
+
+                num_abundances:
+                    type: integer
+                    description: how many proteins are in this dataset
+                    minimum: 1
+                filename:
+                    type: string
+                    example: "9606-WHOLE_ORGANISM-integrated.txt"
+
+        Protein:
+            type: object
+            required:
+                - id
+            properties:
+                id:
+                    type: integer
+                    minimum: 1
+                externalId:
+                    type: string
+                    description: string-db.org's protein external id
+                name:
+                    type: string
+                annotation:
+                    type: string
+                hasFamily:
+                    type: boolean
+                    description: true if protein has orthologs
+
+                uniprotId:
+                    type: string # TODO can be an array
+                abundances:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            formattedAbundance:
+                                type: string
+                                description: NA if there's no abundance info in a dataset for this protein
+                                example: "47.1 ppm"
+                            rank:
+                                type: string
+                                description: user-friendly formatted protein rank with top/bottom percentage where applicable
+                                example: "1. out of 5388 [top 5%]"
+
+                            datasetInfo:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Dataset"
+
+        Abundance:
+            type: object
+            required:
+                - id
+                - abundance
+            properties:
+                id:
+                    type: integer
+                    description: protein id
+                abundance:
+                    type: number
+                    format: float
+                    description: relative protein abundance, in PPM (parts-per-million)
+                    minimum: 0
+                    maximum: 1000000
+                name:
+                    type: string
+                    description: protein name
+                annotation:
+                    type: string
+                    description: protein annotation
+                rank:
+                    description: position of this protein within the dataset based on it's abundance
+                    type: integer
+                    minimum: 0
+
+        ErrorResponse:
+            type: object
+            required:
+                - message
+            properties:
+                message:
+                    type: string
+    parameters:
+        speciesId:
+            in: path
+            name: speciesId
+            description: NCBI taxon
+            required: true
+            schema:
+                type: integer
+                minimum: 1
+            example: 9606
+
+        datasetId:
+            in: path
+            name: datasetId
+            description: paxdb dataset id
+            required: true
+            schema:
+                type: integer
+                minimum: 1
+            example: 389
+
+        proteinId:
+            in: path
+            name: proteinId
+            description: paxdb protein id
+            required: true
+            schema:
+                type: integer
+                minimum: 1
+            example: 1854304
+
+externalDocs:
+    description: Documentation and main site
+    url: 'http://api.pax-db.org/docs'
