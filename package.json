@@ -15,6 +15,7 @@
     "start": "node ./bin/www",
     "test": "mocha test/integration.js",
     "lint": "eslint app.js bin/* routes/* lib/cladogram.js lib/dataset.js lib/histo.js lib/speciesDefaultDataset.js",
+    "lintfix": "eslint --fix app.js bin/* routes/* lib/cladogram.js lib/dataset.js lib/histo.js lib/speciesDefaultDataset.js",
     "validate": "npm ls"
   },
   "dependencies": {

@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const url = require('url');
 const swaggerUi = require('swagger-ui-express');
 const jsYaml = require('js-yaml');
 
@@ -29,6 +30,28 @@ try {
 } catch (e) {
     logger.error('failed to read the api yaml spec', e);
 }
+
+app.use((req, res, next) => {
+    // looks like it's not possible to list many hosts so need to mirror back allowed:
+    if (req.headers.origin) {
+        try {
+            const origin = url.parse(req.headers.origin, false).hostname;
+            if (origin.endsWith('pax-db.org')
+                || origin.endsWith('string-db.org')
+                || origin === 'https://editor.swagger.io'
+                || origin.endsWith('localhost')
+                || origin.endsWith('127.0.0.1')
+            ) {
+                res.header('Access-Control-Allow-Origin', req.headers.origin);
+                res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+            }
+        } catch (e) {
+            // logger.error('failed to set cors: ', JSON.stringify(req.headers));
+            logger.error('failed to set cors: ', req.headers);
+        }
+    }
+    next();
+});
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
