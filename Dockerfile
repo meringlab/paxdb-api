@@ -14,9 +14,6 @@ MAINTAINER Milan Simonovic <milan.simonovic@imls.uzh.ch>
 
 EXPOSE 3000
 
-# DEFAULTS, override when creating a container:
-ENV NODE_ENV production
-
 ENV WD /var/www/paxdb
 WORKDIR  $WD
 
