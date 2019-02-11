@@ -3,4 +3,5 @@ public/javascripts/
 test/
 lib/dataset/**
 lib/proteins/**
+lib/generated/*
 lib/proteins_index.js
