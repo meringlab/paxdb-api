@@ -76,7 +76,23 @@ router.get('/:dataset_id/correlate/:dst_dataset_id', (req, res) => {
 });
 
 router.get('/:dataset_id/histogram', (req, res) => {
-    const proteinId = req.query.hightlightProteinId;
+    let proteinId;
+    if (req.query.highlightProteinId) {
+        proteinId = req.query.highlightProteinId;
+    } else if (req.query.hightlightProteinId) { // TYPO duh
+        proteinId = req.query.hightlightProteinId;
+    }
+
+    const speciesId = req.dataset.info.species_id;
+    // eslint-disable-next-line
+    const proteins = require(`../lib/proteins/${speciesId}`);
+    if (proteinId && !(proteinId in proteins)) {
+        res.status(400);
+        const message = `Protein ${proteinId} does not belong to this species ${speciesId}`;
+        res.set('Content-type', 'application/json');
+        res.render('error', { message });
+        return;
+    }
     let svgFile = `./public/images/datasets/${req.dataset_id}`;
     let thumb = false;
     if ('thumb' in req.query) {
@@ -85,7 +101,7 @@ router.get('/:dataset_id/histogram', (req, res) => {
     } else {
         svgFile = `${svgFile}${proteinId ? `_${proteinId}` : ''}.svg`;
     }
-    plotter.sendHistogram(svgFile, req.dataset_id, res, proteinId, thumb);
+    plotter.sendHistogram(svgFile, req.dataset, res, proteinId, thumb);
 });
 
 router.get('/:species_id/:dataset_id', (req, res) => {
@@ -155,7 +171,3 @@ router.get('/:species_id/:dataset_id/abundances', (req, res) => {
 log.info('loading dataset module COMPLETE');
 
 module.exports = router;
-//TODO
-//exports = module.exports = function (options) {
-//    return router
-//}

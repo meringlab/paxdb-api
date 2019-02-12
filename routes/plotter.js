@@ -14,11 +14,10 @@ const log = bunyan.createLogger({
 });
 
 
-function sendHistogram(svgFile, datasetId, res, highlightProteinId, thumb) {
+function sendHistogram(svgFile, dataset, res, highlightProteinId, thumb) {
     fs.readFile(svgFile, { encoding: 'utf8' }, (err, data) => {
         if (err) {
             log.info(`creating histogram ${svgFile}`);
-            const dataset = require(`../lib/dataset/${datasetId}`);
 
             const abundancesMap = dataset.abundances; //map proteinId -> {a : , r: , ..}
             const abundances = [];
@@ -40,7 +39,7 @@ function sendHistogram(svgFile, datasetId, res, highlightProteinId, thumb) {
 
             if (err.code === 'ENOENT') {
                 fs.writeFile(svgFile, d3n.svgString(), (err2) => {
-                    if (err2) log.error(`saving histogram for ${datasetId} - ${svgFile}: ${err2.message}`);
+                    if (err2) log.error(`saving histogram for ${dataset.info.id} - ${svgFile}: ${err2.message}`);
                 });
             } else {
                 log.error(`failed to read histogram file ${svgFile}: ${err.message}`);

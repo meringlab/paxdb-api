@@ -27,15 +27,14 @@ function parseSpecies(ncbiTaxon) {
 }
 
 //TODO allow species names (and synonyms)
-let checkSpeciesInputParameter = (req, res, next, speciesId) => {
+const checkSpeciesInputParameter = (req, res, next, speciesId) => {
     try {
-        let id = parseSpecies(speciesId);
+        parseSpecies(speciesId);
         next();
     } catch (e) {
         res.status(404);
         res.set('Content-type', 'application/json');
         res.render('error', { message: `Unknown species: ${speciesId}` });
-        return;
     }
 };
 router.param('species_id', checkSpeciesInputParameter);

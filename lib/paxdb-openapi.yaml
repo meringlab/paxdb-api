@@ -176,7 +176,7 @@ paths:
             operationId: plotDatasetHistogram
             parameters:
                 - $ref: "#/components/parameters/datasetId"
-                - name: hightlightProteinId
+                - name: highlightProteinId
                   in: query
                   required: false
                   schema:
@@ -185,12 +185,24 @@ paths:
                   example: 1854304
             responses:
                 '200':
-                    description: Produces a histogram plot. If hightlightProteinId was specified, then the container bin will be coloured.
+                    description: Produces a histogram plot. If highlightProteinId was specified, then the container bin will be coloured.
                     content:
                         image/svg+xml:
                             schema:
                                 type: string
 
+                '400':
+                    description: highlightProteinId does not belong to this species
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                '404':
+                    description: dataset not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
                 default:
                     description: Error
                     content:
@@ -236,6 +248,18 @@ paths:
                                 type: array
                                 items:
                                     $ref: "#/components/schemas/Abundance"
+                '400':
+                    description: datasetId exists but does not belong to speciesId, or invalid query
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                '404':
+                    description: species or dataset not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
 
                 # responses may fall through to errors
                 default:
