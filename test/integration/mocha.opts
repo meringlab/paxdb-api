@@ -1,0 +1,3 @@
+--recursive --colors --exit
+--require ./test/integration/test.bootstrap
+

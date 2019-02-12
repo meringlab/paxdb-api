@@ -1,3 +1,0 @@
---recursive --colors --exit
---require ./test/test.bootstrap
-

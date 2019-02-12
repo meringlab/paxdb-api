@@ -5,6 +5,7 @@ pipeline:
       - npm install
       - npm run lint
       - npm test
+      - npm test-integration
 
   publish:
     image: plugins/docker

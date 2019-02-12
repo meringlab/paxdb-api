@@ -3,6 +3,7 @@ const { expect, assert } = require('chai');
 
 
 describe("api", function () {
+  expect(global.apiapp).to.not.be.undefined;
   const client = supertest(global.apiapp);
 
   describe("species", function () {
