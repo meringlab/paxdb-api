@@ -11,26 +11,39 @@ const log = bunyan.createLogger({
     //TODO server / host / process ..
 });
 
-//TODO allow species names (and synonyms
-router.param('species_id', (req, res, next, speciesId) => {
-    const id = parseInt(speciesId, 10);
-    log.debug({ speciesId, id });
+/**
+ *
+ * @param ncbiTaxon as string
+ * @return {number}
+ */
+function parseSpecies(ncbiTaxon) {
+    const id = parseInt(ncbiTaxon, 10);
+    log.debug({ speciesId: ncbiTaxon, id });
 
     if (!(String(id) in species)) {
+        throw new Error(`Unknown species: ${ncbiTaxon}`);
+    }
+    return id;
+}
+
+//TODO allow species names (and synonyms)
+let checkSpeciesInputParameter = (req, res, next, speciesId) => {
+    try {
+        let id = parseSpecies(speciesId);
+        next();
+    } catch (e) {
         res.status(404);
         res.set('Content-type', 'application/json');
         res.render('error', { message: `Unknown species: ${speciesId}` });
         return;
     }
-
-    // once validation is done save the new item in the req
-    req.species_id = String(id);
-    next();
-});
+};
+router.param('species_id', checkSpeciesInputParameter);
+router.param('dst_species_id', checkSpeciesInputParameter);
 
 router.get('/:species_id/correlate/:dst_species_id', (req, res) => {
-    const d1 = defaultDataset(species[req.species_id].datasets).id;
-    const d2 = defaultDataset(species[req.params.dst_species_id].datasets).id;
+    const d1 = defaultDataset(species[parseSpecies(req.params.species_id)].datasets).id;
+    const d2 = defaultDataset(species[parseSpecies(req.params.dst_species_id)].datasets).id;
     //can't figure out how to forward:
     // req.url = `/dataset/${d1}/correlate/${d2}`;
     // req.params['dataset'] = d1;
@@ -47,7 +60,3 @@ router.get('/:species_id', (req, res) => {
 });
 
 module.exports = router;
-//TODO
-//exports = module.exports = function (options) {
-//    return router
-//}

@@ -57,6 +57,12 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Species"
+                '404':
+                    description: species not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
 
                 # responses may fall through to errors
                 default:
@@ -87,6 +93,12 @@ paths:
                         image/svg+xml:
                             schema:
                                 type: string
+                '404':
+                    description: species not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
 
                 default:
                     description: Error
@@ -109,6 +121,18 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Dataset"
+                '400':
+                    description: datasetId exists but does not belong to speciesId
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                '404':
+                    description: species or dataset not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
 
                 # responses may fall through to errors
                 default:
