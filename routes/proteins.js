@@ -21,6 +21,12 @@ router.get('/', (req, res) => {
     log.info({ query: req.query.ids });
     const ids = req.query.ids.split(',')
         .map(i => parseInt(i, 10));
+    if (ids.length === 0) {
+        res.status(400);
+        res.set('Content-type', 'application/json');
+        res.render('error', { message: 'No proteins found!' });
+        return;
+    }
     for (let i = 0; i < ids.length; i += 1) {
         if (!(ids[i] in speciesForProtein)) {
             res.status(404);
@@ -30,6 +36,14 @@ router.get('/', (req, res) => {
         }
     }
     const speciesId = speciesForProtein[ids[0]];//all belong to the same
+    for (let i = 0; i < ids.length; i += 1) {
+        if (speciesId !== speciesForProtein[ids[i]]) {
+            res.status(400);
+            res.set('Content-type', 'application/json');
+            res.render('error', { message: 'All proteins must belong to the same species!' });
+            return;
+        }
+    }
 
     const proteinsMap = require(`../lib/proteins/${speciesId}`);
     const proteins = ids.map((id) => {

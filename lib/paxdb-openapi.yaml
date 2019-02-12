@@ -282,8 +282,12 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Protein"
-
-                # responses may fall through to errors
+                '404':
+                    description: protein not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
                 default:
                     description: Error
                     content:
@@ -310,8 +314,12 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Protein"
-
-                # responses may fall through to errors
+                '404':
+                    description: protein not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
                 default:
                     description: Error
                     content:
@@ -362,7 +370,18 @@ paths:
                                                         type: string
                                                         description: NA if there's no abundance info in a dataset for this protein
                                                         example: "47.1 ppm"
-
+                '400':
+                    description: no input, or proteins don't belong to the same species
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                '404':
+                    description: one or more proteins not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
                 default:
                     description: Error
                     content:

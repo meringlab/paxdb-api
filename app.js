@@ -21,6 +21,7 @@ const proteins = require('./routes/proteins');
 const app = express();
 
 try {
+    // eslint-disable-next-line detect-non-literal-fs-filename
     const v1ApiDoc = fs.readFileSync(path.resolve(__dirname, './lib/paxdb-openapi.yaml'), 'utf8');
     const apidoc = jsYaml.safeLoad(v1ApiDoc, { json: true });
     app.use('/v1/swagger-ui', swaggerUi.serve, swaggerUi.setup(apidoc));
