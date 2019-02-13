@@ -56,7 +56,7 @@ describe("api", function () {
     });
     it('fails for unknown id', function (done) {
       client
-        .get('/protein/-1234')
+        .get('/protein/1115590') //it's a valid string-db protein but not in paxdb
         .expect(404)
         .end(done);
     });

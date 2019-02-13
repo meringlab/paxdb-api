@@ -23,7 +23,7 @@ router.param('protein_id', (req, res, next, proteinId) => {
     log.debug({ proteinId, id });
 
     //TODO support external ids!
-    if (!(id in speciesForProtein)) {
+    if (!(id in speciesForProtein) || !speciesForProtein[id]) {
         res.status(404);
         res.set('Content-type', 'application/json');
         res.render('error', { message: `Unknown protein: ${proteinId}` });

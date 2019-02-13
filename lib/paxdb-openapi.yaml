@@ -593,7 +593,3 @@ components:
                 type: integer
                 minimum: 1
             example: 1854304
-
-externalDocs:
-    description: Documentation and main site
-    url: 'http://api.pax-db.org/docs'
