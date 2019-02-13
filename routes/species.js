@@ -55,7 +55,7 @@ router.get('/:species_id/correlate/:dst_species_id', (req, res) => {
 });
 
 router.get('/:species_id', (req, res) => {
-    res.json(species[req.species_id]);
+    res.json(species[req.params.species_id]);
 });
 
 module.exports = router;
