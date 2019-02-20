@@ -67,6 +67,11 @@ function sendScatter(svgFile, d1, d2, res) {
             const data = scatter.correlate(a1, a2, nogs);
             const d3n = scatter.plot(data, dataset1.info.name, dataset2.info.name);
 
+            if (res) {
+                res.header('content-type', 'image/svg+xml');
+                res.end(d3n.svgString());
+            }
+
             if (err.code === 'ENOENT') {
                 fs.writeFile(svgFile, d3n.svgString(), (err2) => {
                     if (err2) log.error(`saving scatter for ${d1}/${d2} - ${svgFile}: ${err2.message}`);
@@ -74,13 +79,12 @@ function sendScatter(svgFile, d1, d2, res) {
             } else {
                 log.error(`failed to read scatter file ${svgFile}: ${err.message}`);
             }
-            if (res) {
-                res.header('content-type', 'image/svg+xml');
-                res.end(d3n.svgString());
-            }
         } else if (res) {
             res.header('content-type', 'image/svg+xml');
             res.end(svgFileContents);
+        } else {
+            res.status(500)
+                .json({ message: 'failed to create scatter' });
         }
     });
 }
