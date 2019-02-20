@@ -1,5 +1,5 @@
-#public/images/datasets
-public/images/scatter
+#public/images/datasets/**svg
+public/images/scatter/**svg
 
 # Created by .gitignore support plugin (hsz.mobi)
 ### Emacs template
