@@ -26,7 +26,7 @@ try {
     const apidoc = jsYaml.safeLoad(v1ApiDoc, { json: true });
     app.use('/v1/swagger-ui', swaggerUi.serve, swaggerUi.setup(apidoc));
     apidoc.servers.forEach((server) => {
-        logger.info(`swagger-ui mounted at ${server.url}/swagger-ui`);
+        logger.info(`swagger-ui mounted at ${server.url}/v1/swagger-ui`);
     });
 } catch (e) {
     logger.error('failed to read the api yaml spec', e);
