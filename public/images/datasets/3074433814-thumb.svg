@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="160"><defs><style type="text/css"><![CDATA[ 
+.bar rect {
+  fill-opacity: 0;
+  stroke:       black;
+  stroke-width: 0.5;
+}
+
+.highlight rect {
+  fill:       red;
+  fill-opacity: 1;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+path {
+    stroke: red;
+    fill: none;
+}
+
+line {
+    stroke: red;
+}
+
+path.marker {
+    fill: red;
+}
+ ]]></style></defs><g transform="translate(50,10)"><g class="bar" transform="translate(0,88.63070539419087)"><rect x="1" width="24" height="31.36929460580913"></rect></g><g class="bar" transform="translate(25,67.71784232365145)"><rect x="1" width="24" height="52.28215767634855"></rect></g><g class="bar" transform="translate(50,23.900414937759336)"><rect x="1" width="24" height="96.09958506224066"></rect></g><g class="bar" transform="translate(75,0)"><rect x="1" width="24" height="120"></rect></g><g class="bar" transform="translate(100,47.80082987551867)"><rect x="1" width="24" height="72.19917012448133"></rect></g><g class="bar" transform="translate(125,87.13692946058092)"><rect x="1" width="24" height="32.863070539419084"></rect></g><g class="bar" transform="translate(150,110.04149377593362)"><rect x="1" width="24" height="9.958506224066383"></rect></g><g class="bar" transform="translate(175,120)"><rect x="1" width="24" height="0"></rect></g></g></svg>

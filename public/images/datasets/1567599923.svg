@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="350"><defs><style type="text/css"><![CDATA[ 
+.bar rect {
+  fill-opacity: 0;
+  stroke:       black;
+  stroke-width: 0.5;
+}
+
+.highlight rect {
+  fill:       red;
+  fill-opacity: 1;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+path {
+    stroke: red;
+    fill: none;
+}
+
+line {
+    stroke: red;
+}
+
+path.marker {
+    fill: red;
+}
+ ]]></style></defs><g transform="translate(50,10)"><g class="bar" transform="translate(0,310)"><rect x="1" width="31.5" height="0"></rect></g><g class="bar" transform="translate(32.5,310)"><rect x="1" width="31.5" height="0"></rect></g><g class="bar" transform="translate(65,307.89115646258506)"><rect x="1" width="31.5" height="2.1088435374149412"></rect></g><g class="bar" transform="translate(97.5,307.89115646258506)"><rect x="1" width="31.5" height="2.1088435374149412"></rect></g><g class="bar" transform="translate(130,284.6938775510204)"><rect x="1" width="31.5" height="25.30612244897958"></rect></g><g class="bar" transform="translate(162.5,276.25850340136054)"><rect x="1" width="31.5" height="33.74149659863946"></rect></g><g class="bar" transform="translate(195,240.40816326530614)"><rect x="1" width="31.5" height="69.59183673469386"></rect></g><g class="bar" transform="translate(227.5,156.05442176870747)"><rect x="1" width="31.5" height="153.94557823129253"></rect></g><g class="bar" transform="translate(260,130.7482993197279)"><rect x="1" width="31.5" height="179.2517006802721"></rect></g><g class="bar" transform="translate(292.5,0)"><rect x="1" width="31.5" height="310"></rect></g><g class="bar" transform="translate(325,132.85714285714286)"><rect x="1" width="31.5" height="177.14285714285714"></rect></g><g class="bar" transform="translate(357.5,219.31972789115645)"><rect x="1" width="31.5" height="90.68027210884355"></rect></g><g class="bar" transform="translate(390,282.5850340136054)"><rect x="1" width="31.5" height="27.414965986394577"></rect></g><g class="bar" transform="translate(422.5,303.6734693877551)"><rect x="1" width="31.5" height="6.326530612244881"></rect></g><g class="bar" transform="translate(455,307.89115646258506)"><rect x="1" width="31.5" height="2.1088435374149412"></rect></g><g class="bar" transform="translate(487.5,310)"><rect x="1" width="31.5" height="0"></rect></g><g class="axis axis--x" transform="translate(0,310)" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle"><path class="domain" stroke="#000" d="M0.5,6V0.5H520.5V6"></path><g class="tick" opacity="1" transform="translate(0.5,0)"><line stroke="#000" y2="6"></line><text fill="#000" y="9" dy="0.71em">0.01</text></g><g class="tick" opacity="1" transform="translate(130.5,0)"><line stroke="#000" y2="6"></line><text fill="#000" y="9" dy="0.71em">1</text></g><g class="tick" opacity="1" transform="translate(260.5,0)"><line stroke="#000" y2="6"></line><text fill="#000" y="9" dy="0.71em">100</text></g><g class="tick" opacity="1" transform="translate(390.5,0)"><line stroke="#000" y2="6"></line><text fill="#000" y="9" dy="0.71em">10000</text></g><g class="tick" opacity="1" transform="translate(520.5,0)"><line stroke="#000" y2="6"></line><text fill="#000" y="9" dy="0.71em"></text></g></g><g class="axis axis--y" fill="none" font-size="10" font-family="sans-serif" text-anchor="end"><path class="domain" stroke="#000" d="M-6,310.5H0.5V0.5H-6"></path><g class="tick" opacity="1" transform="translate(0,310.5)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">0</text></g><g class="tick" opacity="1" transform="translate(0,268.32312925170066)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">20</text></g><g class="tick" opacity="1" transform="translate(0,226.14625850340136)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">40</text></g><g class="tick" opacity="1" transform="translate(0,183.96938775510205)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">60</text></g><g class="tick" opacity="1" transform="translate(0,141.7925170068027)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">80</text></g><g class="tick" opacity="1" transform="translate(0,99.6156462585034)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">100</text></g><g class="tick" opacity="1" transform="translate(0,57.43877551020407)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">120</text></g><g class="tick" opacity="1" transform="translate(0,15.26190476190476)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">140</text></g></g></g></svg>

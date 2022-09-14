@@ -10,7 +10,7 @@
 ## $ docker service update --image docker-registry.meringlab.org:5443/paxdb/api:blue  paxdb_api_species_4
 ### see https://docs.docker.com/engine/swarm/swarm-tutorial/rolling-update/
 FROM       node:10-alpine
-MAINTAINER Milan Simonovic <milan.simonovic@imls.uzh.ch>
+LABEL api-species.authors="Milan Simonovic, Qingyao Huang"
 
 EXPOSE 3000
 
@@ -32,6 +32,6 @@ RUN apk del build-dependencies
 COPY . .
 
 ENV SERVICE_TAGS "paxdb,api"
-ENV SERVICE_NAME "species_v4.1"
+ENV SERVICE_NAME "species_v5.0"
 
 CMD ["node", "--max-old-space-size=2048", "./bin/www"]

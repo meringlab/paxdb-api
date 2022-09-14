@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="160"><defs><style type="text/css"><![CDATA[ 
+.bar rect {
+  fill-opacity: 0;
+  stroke:       black;
+  stroke-width: 0.5;
+}
+
+.highlight rect {
+  fill:       red;
+  fill-opacity: 1;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+path {
+    stroke: red;
+    fill: none;
+}
+
+line {
+    stroke: red;
+}
+
+path.marker {
+    fill: red;
+}
+ ]]></style></defs><g transform="translate(50,10)"><g class="bar" transform="translate(0,120)"><rect x="1" width="24" height="0"></rect></g><g class="bar" transform="translate(25,120)"><rect x="1" width="24" height="0"></rect></g><g class="bar" transform="translate(50,113.6842105263158)"><rect x="1" width="24" height="6.315789473684205"></rect></g><g class="bar" transform="translate(75,45.78947368421052)"><rect x="1" width="24" height="74.21052631578948"></rect></g><g class="bar" transform="translate(100,0)"><rect x="1" width="24" height="120"></rect></g><g class="bar" transform="translate(125,72.63157894736841)"><rect x="1" width="24" height="47.36842105263159"></rect></g><g class="bar" transform="translate(150,116.3157894736842)"><rect x="1" width="24" height="3.6842105263157947"></rect></g><g class="bar" transform="translate(175,120)"><rect x="1" width="24" height="0"></rect></g></g></svg>

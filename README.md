@@ -19,7 +19,7 @@ MIT. See "LICENSE.txt".
 
 ### Build the image
 
-To create the image `paxdb/species`, execute the following command:
+To create the image `paxdb/api-species`, execute the following command:
 
 ```
 $ docker build -t paxdb/api-species .
@@ -36,8 +36,8 @@ $ docker run --restart=always -P -d --name paxdb_api_species paxdb/api-species
 The process of updating to a new version is as follows:
 
 1. update ./data/abundances (computed by [data-pipeline](https://github.com/meringlab/paxdb-data-pipeline))
-2. update ./data/orthgroups (computed by Damian but should be in a repo of its own)
-3. update ./data/eggnog4_genome_linkout.txt (last time Kristoffer Forslund <forslund@embl.de> did it)
-4. update ./data/paxdb_uniprot_linkins_ids.tsv (a pruned down version of string_uniprot_linkins computed by Damian)
-5. update lib/cladogram.js
+2. update lib/cladogram.js
+3. update ./data/orthgroups (IMPORTANT! Should include no extra taxonomic levels than required by cladogram.js)
+4. update ./data/eggnog5_genome_linkout.txt (linkout to ensembl when available, otherwise to ncbi taxon browser)
+5. update ./data/paxdb_uniprot_linkins_ids.tsv (generated from "BLAST_UniProt_ID" terms from STRING v11.5 protein alias file)
 6. increment PAYLOAD_VERSION and update connectionString in build.js, then run it to generate lib/species.js, lib/dataset and lib/proteins 

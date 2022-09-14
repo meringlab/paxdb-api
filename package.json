@@ -1,6 +1,6 @@
 {
   "name": "api-species",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "author": "Milan Simonovic <milan.simonovic@uzh.ch>",
   "license": "MIT",
   "description": "pax-db.org species API (species, proteins, datasets)",
@@ -20,14 +20,14 @@
     "validate": "npm ls"
   },
   "dependencies": {
-    "express-openapi": "~4.3.2",
-    "js-yaml": "^3.12.1",
-    "swagger-ui-express": "^4.0.2",
     "bunyan": "^1.8.12",
-    "d3": "~4.2",
+    "d3": "^4.13.0",
     "d3-node": "~1.0",
     "ejs": "~2.6.1",
     "express": "~4.16.3",
+    "express-openapi": "~4.3.2",
+    "js-yaml": "^3.12.1",
+    "swagger-ui-express": "^4.0.2",
     "when": "~3.7"
   },
   "devDependencies": {

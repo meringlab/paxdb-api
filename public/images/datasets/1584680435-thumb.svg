@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="160"><defs><style type="text/css"><![CDATA[ 
+.bar rect {
+  fill-opacity: 0;
+  stroke:       black;
+  stroke-width: 0.5;
+}
+
+.highlight rect {
+  fill:       red;
+  fill-opacity: 1;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+path {
+    stroke: red;
+    fill: none;
+}
+
+line {
+    stroke: red;
+}
+
+path.marker {
+    fill: red;
+}
+ ]]></style></defs><g transform="translate(50,10)"><g class="bar" transform="translate(0,79.85185185185185)"><rect x="1" width="11.5" height="40.14814814814815"></rect></g><g class="bar" transform="translate(12.5,66.96296296296296)"><rect x="1" width="11.5" height="53.03703703703704"></rect></g><g class="bar" transform="translate(25,50.22222222222223)"><rect x="1" width="11.5" height="69.77777777777777"></rect></g><g class="bar" transform="translate(37.5,15.555555555555557)"><rect x="1" width="11.5" height="104.44444444444444"></rect></g><g class="bar" transform="translate(50,20.888888888888886)"><rect x="1" width="11.5" height="99.11111111111111"></rect></g><g class="bar" transform="translate(62.5,4.888888888888886)"><rect x="1" width="11.5" height="115.11111111111111"></rect></g><g class="bar" transform="translate(75,0)"><rect x="1" width="11.5" height="120"></rect></g><g class="bar" transform="translate(87.5,6.8148148148148096)"><rect x="1" width="11.5" height="113.18518518518519"></rect></g><g class="bar" transform="translate(100,40)"><rect x="1" width="11.5" height="80"></rect></g><g class="bar" transform="translate(112.5,68.44444444444444)"><rect x="1" width="11.5" height="51.55555555555556"></rect></g><g class="bar" transform="translate(125,101.62962962962963)"><rect x="1" width="11.5" height="18.370370370370367"></rect></g><g class="bar" transform="translate(137.5,112.44444444444444)"><rect x="1" width="11.5" height="7.555555555555557"></rect></g><g class="bar" transform="translate(150,118.66666666666667)"><rect x="1" width="11.5" height="1.3333333333333286"></rect></g><g class="bar" transform="translate(162.5,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(175,120)"><rect x="1" width="11.5" height="0"></rect></g><g class="bar" transform="translate(187.5,120)"><rect x="1" width="11.5" height="0"></rect></g></g></svg>

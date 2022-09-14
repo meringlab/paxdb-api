@@ -2,31 +2,32 @@
  * Created by milans on 9/8/16.
  */
 
-const PAYLOAD_VERSION = 17;
+const PAYLOAD_VERSION = 22;
 const uniprotMappingFile = './data/paxdb_uniprot_linkins_ids.tsv';
 const PAXDB_URL = 'https://pax-db.org/';
+const PAXDB_API_URL = 'https://beta-api.pax-db.org/';
 const fs = require('fs');
 const async = require('async');
 const pg = require('pg');
 const readline = require('readline');
 
-const speciesIds = [882,1148,3055,3702,4081,4577,4896,4932,5061,5691,5833,6239,7165,7227,7460,7955,8364,9031,9598,9606,9615,9796,9823,9913,10090,10116,39947,44689,64091,83332,85962,99287,122586,158878,160490,169963,192222,198214,208964,211586,214092,214684,224308,226186,243159,260799,267671,272623,272624,283166,353153,449447,511145,546414,593117,722438];
+const speciesIds = [882,1148,3055,3702,4081,4577,4896,4932,5061,5691,5833,6239,7165,7227,7460,7955,8364,9031,9598,9606,9615,9796,9823,9913,10090,10116,39947,44689,64091,83332,85962,99287,122586,1280,1314,169963,192222,198214,208964,211586,214092,214684,224308,226186,243159,260799,189518,272623,272624,283166,353153,449447,511145,546414,593117,722438,73239,373153,224326,170187,5476,29760,246196,392499,284590,3708,67767,309800,7091,212042,6945,121845,8355,246200,547559,1286170,4113,7159,3847,4097,4565,8030,9544,4513,8022,3880,3218,272620,5811,9986,9685,65489,347256,89462,3635,9940,2711,160488,3827,100226,257313,1140,88036,109376,265311];
 
-const connectionString = process.env.DATABASE_URL || 'postgres://postgres@atlas.meringlab.org:5432/string_10_5';
+const connectionString = process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5434/paxdb';
 const client = new pg.Client(connectionString);
 client.connect();
 
 function loadSpeciesInfo(callback) {
   console.log(`loading species info`);
-  const sqlSpeciesInfo = `select species_id,official_name,compact_name from items.species where species_id in (${speciesIds.join(',')})`;
-  const sqlNumProteins = `select species_id,count(protein_id) as c from items.proteins where species_id in (${speciesIds.join(',')}) group by species_id; `;
+  const sqlSpeciesInfo = `select species_id,official_name,compact_name from paxdb5_0.species where species_id in (${speciesIds.join(',')})`;
+  const sqlNumProteins = `select species_id,count(protein_id) as c from paxdb5_0.proteins where species_id in (${speciesIds.join(',')}) group by species_id; `;
   const species = {};
   client.query(sqlSpeciesInfo).then(res => {
-    res.rows.forEach(function(r) {
+    res.rows.forEach(function (r) {
       species[r.species_id] = { id: r.species_id, name: r.official_name, compact_name: r.compact_name };
     });
     client.query(sqlNumProteins).then(npres => {
-      npres.rows.forEach(function(r) {
+      npres.rows.forEach(function (r) {
         species[r.species_id]['num_proteins'] = parseInt(r.c);
       });
       console.log(`loading species info DONE`);
@@ -36,13 +37,13 @@ function loadSpeciesInfo(callback) {
 }
 
 function parseOrthgroups(contents, familySet) {
-  contents.split('\n').forEach(function(line) {
+  contents.split('\n').forEach(function (line) {
     if (line.trim() == 0) {
       return
     }
     var rec = line.split('\t');
     //{"id": 9443, "name": "NOG21051", "clade": "PRIMATES", "members": [1803841, 1854701]},
-    rec.slice(1, rec.length).forEach(function(el) {
+    rec.slice(1, rec.length).forEach(function (el) {
       familySet.add(parseInt(el));
     });
   });
@@ -67,7 +68,7 @@ function loadProteins(cb, createProteinModules = false) {
   console.log(`loading proteins`);
   console.log("loading orthgroups");
   const familySet = new Set();
-  fs.readdirSync('./data/orthgroups').forEach(function(file) {
+  fs.readdirSync('./data/orthgroups').forEach(function (file) {
     parseOrthgroups(fs.readFileSync(`./data/orthgroups/${file}`, { 'encoding': 'utf8' }), familySet);
   });
 
@@ -75,13 +76,13 @@ function loadProteins(cb, createProteinModules = false) {
   const uniprotPaxdbIdsMap = {};
   const speciesForProtein = {};
 
-  async.eachSeries(speciesIds, function(speciesId, callback) {
+  async.eachSeries(speciesIds, function (speciesId, callback) {
     console.log(`loading proteins for ${speciesId}`);
     const proteins = {};
     const sql = `select protein_id, protein_external_id, preferred_name, annotation ` +
-      ` from items.proteins where species_id = ${speciesId}`;
+      ` from paxdb5_0.proteins where species_id = ${speciesId}`;
     client.query(sql).then(res => {
-      res.rows.forEach(function(r) {
+      res.rows.forEach(function (r) {
         proteins[r.protein_id] = {
           id: r.protein_id,
           externalId: r.protein_external_id,
@@ -92,7 +93,7 @@ function loadProteins(cb, createProteinModules = false) {
         if (Object.prototype.hasOwnProperty.call(paxdbUniprotIdsMap, r.protein_external_id)) {
           const ac = paxdbUniprotIdsMap[r.protein_external_id];
           proteins[r.protein_id].uniprotId = ac;
-          if (! Object.prototype.hasOwnProperty.call(uniprotPaxdbIdsMap, ac)) {
+          if (!Object.prototype.hasOwnProperty.call(uniprotPaxdbIdsMap, ac)) {
             uniprotPaxdbIdsMap[ac] = r.protein_id;
           } else {
             let prev = uniprotPaxdbIdsMap[ac];
@@ -117,7 +118,7 @@ function loadProteins(cb, createProteinModules = false) {
       }
       callback();
     });
-  }, function(err) {
+  }, function (err) {
     console.log(`loading proteins DONE`);
     if (err) throw err;
     cb(speciesForProtein, uniprotPaxdbIdsMap);
@@ -131,7 +132,7 @@ function loadDatasetInfo(cb) {
   const abundances_asc = {};
   const abundances_desc = {};
   const proteinsCovered = {}
-  async.eachSeries(fs.readdirSync('./data/abundances'), function(d, callback) {
+  async.eachSeries(fs.readdirSync('./data/abundances'), function (d, callback) {
     const dataset = {};
     const abundances = {};
     const peptideCounts = {};
@@ -145,7 +146,7 @@ function loadDatasetInfo(cb) {
     datasets[species].push(dataset);
     const input = fs.createReadStream(`./data/abundances/${d}`);
     const rl = readline.createInterface({ input })
-    rl.on('close', function() {
+    rl.on('close', function () {
 
       //add ranks
       var abundancesSorted = []
@@ -180,7 +181,7 @@ function loadDatasetInfo(cb) {
       callback(null);
     });
 
-    rl.on('line', function(line) {
+    rl.on('line', function (line) {
       if (!line.startsWith("#")) {
         var rec = line.split('\t');
         if (rec.length > 1) {
@@ -224,10 +225,10 @@ function loadDatasetInfo(cb) {
         }
       }
     })
-  }, function(err) {
+  }, function (err) {
     console.log(`loading dataset info DONE`);
     if (err) throw err;
-    speciesIds.forEach(function(id) {
+    speciesIds.forEach(function (id) {
       proteinsCovered[id] = proteinsCovered[id].size
     });
 
@@ -236,16 +237,16 @@ function loadDatasetInfo(cb) {
 }
 
 function loadGenomeSources(callback) {
-  const input = fs.createReadStream('./data/eggnog4_genome_linkout.txt');
+  const input = fs.createReadStream('./data/eggnog5_genome_linkout.txt');
   const rl = readline.createInterface({ input })
   const sources = {};
   const versions = {};
 
-  rl.on('close', function() {
+  rl.on('close', function () {
     callback(sources, versions);
   });
 
-  rl.on('line', function(line) {
+  rl.on('line', function (line) {
     const rec = line.split('\t');
     if (rec.length > 4) {
       sources[parseInt(rec[1])] = `<a href='${rec[4]}'>${rec[2]}</a>`;
@@ -420,7 +421,7 @@ function build_proteins_index(){
       uniprotIdsMap[rec[1]] = externalToInternalMap[rec[0]];
       //append linkout ids as well:
       let protein = proteins[externalToInternalMap[rec[0]]];
-      if (protein.uniprotId && !(protein.uniprotId in uniprotIdsMap) ) {
+      if (protein.uniprotId && !(protein.uniprotId in uniprotIdsMap)) {
         uniprotIdsMap[protein.uniprotId] = protein.id;
       }
     }
@@ -431,7 +432,7 @@ function build_proteins_index(){
   }
 
   console.log('writing proteins_index.js');
-  let writeStream = fs  .createWriteStream('./lib/proteins_index.js');
+  let writeStream = fs.createWriteStream('./lib/proteins_index.js');
   writeStream.write(`//FILE GENERATED BY build.js on ${new Date()}, DO NOT MODIFY!\n`);
   writeStream.write("const speciesForProtein = ");
   writeStream.write(JSON.stringify(speciesForProtein));
@@ -499,7 +500,7 @@ function buildPayload() {
       "legend_file": "${PAXDB_URL}images/payload_legend.png",
       "name"       : "PaxDB"
     }`);
-    payloadStream.end(e=> {
+    payloadStream.end(e => {
       if (e) console.log(`error writing ${speciesId} payload: ${e.message}`); else console.log(`${speciesId} payload written`);
     });
 
@@ -514,12 +515,12 @@ function buildPayload() {
       const abundance = dataset.abundances[proteinId];
       const hexColor = ranking.toRGB(abundance.r);
       nodesStream.write(`${proteins[proteinId].externalId}\t${hexColor}\tAbundance: ${datasetLib.formattedAbundance(abundance.a)}, rank: ${ranking.formatRank(abundance.r)}\t`);
-      nodesStream.write(`${PAXDB_URL}protein/${proteinId}/${proteins[proteinId].name}\t`);
-      nodesStream.write(`${PAXDB_URL}dataset/${d.id}/histogram?hightlightProteinId=${proteinId}\n`);
+      nodesStream.write(`${PAXDB_API_URL}protein/${proteinId}/${proteins[proteinId].name}\t`);
+      nodesStream.write(`${PAXDB_API_URL}dataset/${d.id}/histogram?hightlightProteinId=${proteinId}\n`);
 
     });
 
-    nodesStream.end(e=> {
+    nodesStream.end(e => {
       if (e) console.log(`error writing ${speciesId} payload nodes: ${e.message}`); else console.log(`${speciesId} payload nodes written`)
     });
 
@@ -530,7 +531,7 @@ buildSpecies();
 buildDatasets();
 buildProteins();
 //TODO FIXME writing streams is async, so lib/species.js won' show up before buildPayload is called
-// buildPayload();
-// buildHistograms();
+buildPayload();
+buildHistograms();
 
 

@@ -37,6 +37,10 @@ router.param('protein_id', (req, res, next, proteinId) => {
 function renderProtein(req, res) {
     const speciesId = speciesForProtein[req.protein_id];
     const protein = require(`../lib/proteins/${speciesId}`)[req.protein_id];
+    const protein_name = req.protein_name;
+    if (protein_name && protein_name !== protein.name) {
+        res.status(404);    
+    };
     const abundances = speciesData[speciesId].datasets.map((datasetInfo) => {
         const dataset = require(`../lib/dataset/${datasetInfo.id}`);
         const abundance = dataset.abundances[req.protein_id];
@@ -66,6 +70,10 @@ router.get('/uniprot/:ac', (req, res) => {
     res.status(404);
     res.set('Content-type', 'application/json');
     res.render('error', { message: `no protein in paxdb has this uniprot ac ${req.params.ac}` });
+});
+
+router.get('/:protein_id/:protein_name', (req, res) => {
+    renderProtein(req, res);
 });
 
 module.exports = router;
