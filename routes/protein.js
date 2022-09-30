@@ -7,8 +7,10 @@ const bunyan = require('bunyan');
 const speciesData = require('../lib/species');
 const datasetLib = require('../lib/dataset');
 const proteinIndices = require('../lib/proteins_index');
+const proteinIDMap = require('../lib/proteins_stringId_map');
 
 const { speciesForProtein, uniprotIdsMap } = proteinIndices;
+const { externalToInternalMap } = proteinIDMap;
 
 const router = new express.Router();
 
@@ -70,6 +72,17 @@ router.get('/uniprot/:ac', (req, res) => {
     res.status(404);
     res.set('Content-type', 'application/json');
     res.render('error', { message: `no protein in paxdb has this uniprot ac ${req.params.ac}` });
+});
+
+router.get('/string/:ac', (req, res) => {
+    if (req.params.ac in externalToInternalMap) {
+        req.protein_id = externalToInternalMap[req.params.ac];
+        renderProtein(req, res);
+        return;
+    }
+    res.status(404);
+    res.set('Content-type', 'application/json');
+    res.render('error', { message: `no protein in paxdb has this string id ${req.params.ac}` });
 });
 
 router.get('/:protein_id/:protein_name', (req, res) => {
