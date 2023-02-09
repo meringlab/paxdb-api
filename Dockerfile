@@ -34,4 +34,4 @@ COPY . .
 ENV SERVICE_TAGS "paxdb,api"
 ENV SERVICE_NAME "species_v5.0"
 
-CMD ["node", "--max-old-space-size=2048", "./bin/www"]
+CMD ["node", "--max-old-space-size=4096", "./bin/www"]
