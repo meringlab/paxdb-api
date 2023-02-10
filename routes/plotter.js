@@ -5,7 +5,7 @@ const fs = require('fs');
 const bunyan = require('bunyan');
 const makeHistogram = require('../lib/histo');
 const scatter = require('../lib/scatter');
-const cladogram = require('../lib/cladogram');
+// const cladogram = require('../lib/cladogram');
 
 const log = bunyan.createLogger({
     name: 'paxdb-API',
@@ -51,45 +51,45 @@ function sendHistogram(svgFile, dataset, res, highlightProteinId, thumb) {
     });
 }
 
-function sendScatter(svgFile, d1, d2, res) {
-    fs.readFile(svgFile, { encoding: 'utf8' }, (err, svgFileContents) => {
-        if (err) {
-            log.info(`creating scatter ${svgFile}`);
+// function sendScatter(svgFile, d1, d2, res) {
+//     fs.readFile(svgFile, { encoding: 'utf8' }, (err, svgFileContents) => {
+//         if (err) {
+//             log.info(`creating scatter ${svgFile}`);
 
-            const dataset1 = require(`../lib/dataset/${d1}`);
-            const dataset2 = require(`../lib/dataset/${d2}`);
+//             const dataset1 = require(`../lib/dataset/${d1}`);
+//             const dataset2 = require(`../lib/dataset/${d2}`);
 
-            const s1 = dataset1.info.species_id;
-            const s2 = dataset2.info.species_id;
-            const { nogs } = cladogram.firstCommonAncestor(s1, s2);
-            const a1 = dataset1.abundances; //map proteinId -> {a : , r: , ..}
-            const a2 = dataset2.abundances; //map proteinId -> {a : , r: , ..}
-            const data = scatter.correlate(a1, a2, nogs);
-            const d3n = scatter.plot(data, dataset1.info.name, dataset2.info.name);
+//             const s1 = dataset1.info.species_id;
+//             const s2 = dataset2.info.species_id;
+//             const { nogs } = cladogram.firstCommonAncestor(s1, s2);
+//             const a1 = dataset1.abundances; //map proteinId -> {a : , r: , ..}
+//             const a2 = dataset2.abundances; //map proteinId -> {a : , r: , ..}
+//             const data = scatter.correlate(a1, a2, nogs);
+//             const d3n = scatter.plot(data, dataset1.info.name, dataset2.info.name);
 
-            if (res) {
-                res.header('content-type', 'image/svg+xml');
-                res.end(d3n.svgString());
-            }
+//             if (res) {
+//                 res.header('content-type', 'image/svg+xml');
+//                 res.end(d3n.svgString());
+//             }
 
-            if (err.code === 'ENOENT') {
-                fs.writeFile(svgFile, d3n.svgString(), (err2) => {
-                    if (err2) log.error(`saving scatter for ${d1}/${d2} - ${svgFile}: ${err2.message}`);
-                });
-            } else {
-                log.error(`failed to read scatter file ${svgFile}: ${err.message}`);
-            }
-        } else if (res) {
-            res.header('content-type', 'image/svg+xml');
-            res.end(svgFileContents);
-        } else {
-            res.status(500)
-                .json({ message: 'failed to create scatter' });
-        }
-    });
-}
+//             if (err.code === 'ENOENT') {
+//                 fs.writeFile(svgFile, d3n.svgString(), (err2) => {
+//                     if (err2) log.error(`saving scatter for ${d1}/${d2} - ${svgFile}: ${err2.message}`);
+//                 });
+//             } else {
+//                 log.error(`failed to read scatter file ${svgFile}: ${err.message}`);
+//             }
+//         } else if (res) {
+//             res.header('content-type', 'image/svg+xml');
+//             res.end(svgFileContents);
+//         } else {
+//             res.status(500)
+//                 .json({ message: 'failed to create scatter' });
+//         }
+//     });
+// }
 module.exports.sendHistogram = sendHistogram;
-module.exports.sendScatter = sendScatter;
+// module.exports.sendScatter = sendScatter;
 
 // var glob = require("glob")
 //

@@ -2,7 +2,7 @@
  * Created by milans on 9/8/16.
  */
 
-const PAYLOAD_VERSION = 22;
+const PAYLOAD_VERSION = 23;
 const uniprotMappingFile = './data/paxdb_uniprot_linkins_ids.tsv';
 const PAXDB_URL = 'https://pax-db.org/';
 const PAXDB_API_URL = 'https://api.pax-db.org/';
@@ -11,7 +11,7 @@ const async = require('async');
 const pg = require('pg');
 const readline = require('readline');
 
-const speciesIds = [882,1148,3055,3702,4081,4577,4896,4932,5061,5691,5833,6239,7165,7227,7460,7955,8364,9031,9598,9606,9615,9796,9823,9913,10090,10116,39947,44689,64091,83332,85962,99287,122586,1280,1314,169963,192222,198214,208964,211586,214092,214684,224308,226186,243159,260799,189518,272623,272624,283166,353153,449447,511145,546414,593117,722438,73239,373153,224326,170187,5476,29760,246196,392499,284590,3708,67767,309800,7091,212042,6945,121845,8355,246200,547559,1286170,4113,7159,3847,4097,4565,8030,9544,4513,8022,3880,3218,272620,5811,9986,9685,65489,347256,89462,3635,9940,2711,160488,3827,100226,257313,1140,88036,109376,265311];
+const speciesIds = [882,1148,3055,3702,4081,4577,4896,4932,5061,5691,5833,6239,7165,7227,7460,7955,8364,9031,9598,9606,9615,9796,9823,9913,10090,10116,39947,44689,64091,83332,85962,99287,122586,1280,1314,169963,192222,198214,208964,211586,214092,214684,224308,226186,243159,260799,189518,272623,272624,283166,353153,449447,511145,546414,593117,722438,73239,373153,224326,170187,5476,29760,246196,392499,284590,3708,67767,309800,7091,212042,6945,121845,8355,246200,547559,1286170,4113,7159,3847,4097,4565,8030,9544,4513,8022,3880,3218,272620,5811,9986,9685,65489,347256,89462,3635,9940,2711,160488,3827,100226,257313,1140,265311,589924,9612,657321,768679,522772,515619,263820,537011,55529,479436,10029,584708,5141,35128,411477,572546,667014,289377,1435377,610130,665571,187420,411460,272569,195103,1680,309799,5507,1114965,224325,79929,190304,190192,349741,273057,74426,2850,411470,410072,479437,273116,186497,2903,411479,469381,411902,273075,30732,269797,321967,523849,435591,411461,511051,1123384,880073,272559,1198114,435590,523841,243275,123214,709991,243232,243230,166486,243274];
 
 const connectionString = process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5434/paxdb';
 const client = new pg.Client(connectionString);
@@ -231,6 +231,7 @@ function loadDatasetInfo(cb) {
     console.log(`loading dataset info DONE`);
     if (err) throw err;
     speciesIds.forEach(function (id) {
+      // console.log(id);
       proteinsCovered[id] = proteinsCovered[id].size
     });
 
@@ -532,6 +533,7 @@ function buildPayload() {
       //  3702.AT5G51880.1    #B95050 Abundance: 3.96 ppm, rank: 7077. out of 20185   http://archive.pax-db.org/v4.0/#!protein/3702.AT5G51880.1   http://archive.pax-db.org/v4.0/images/proteins_histograms/323_140812-small.png
       const abundance = dataset.abundances[proteinId];
       const hexColor = ranking.toRGB(abundance.r);
+      // console.log(proteinId);
       nodesStream.write(`${proteins[proteinId].externalId}\t${hexColor}\tAbundance: ${datasetLib.formattedAbundance(abundance.a)}, rank: ${ranking.formatRank(abundance.r)}\t`);
       nodesStream.write(`${PAXDB_API_URL}protein/${proteinId}/${proteins[proteinId].name}\t`);
       nodesStream.write(`${PAXDB_API_URL}dataset/${d.id}/histogram?hightlightProteinId=${proteinId}\n`);
@@ -545,9 +547,9 @@ function buildPayload() {
   }
 }
 
-buildSpecies();
-buildDatasets();
-buildProteins();
+// buildSpecies();
+// buildDatasets();
+// buildProteins();
 // TODO FIXME writing streams is async, so lib/species.js won' show up before buildPayload is called
 buildPayload();
-buildHistograms();
+// buildHistograms();
