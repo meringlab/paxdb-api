@@ -17,6 +17,11 @@ MIT. See "LICENSE.txt".
 
 ## Usage
 
+### Build js files
+```
+node --max-old-space-size=4096 build.js 
+```
+
 ### Build the image
 
 To create the image `paxdb/api-species`, execute the following command:

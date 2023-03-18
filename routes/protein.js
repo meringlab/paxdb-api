@@ -7,10 +7,10 @@ const bunyan = require('bunyan');
 const speciesData = require('../lib/species');
 const datasetLib = require('../lib/dataset');
 const proteinIndices = require('../lib/proteins_index');
-const proteinIDMap = require('../lib/proteins_stringId_map');
+// const proteinIDMap = require('../lib/proteins_stringId_map');
 
-const { speciesForProtein, uniprotIdsMap } = proteinIndices;
-const { externalToInternalMap } = proteinIDMap;
+const { uniprotIdsMap } = proteinIndices; //speciesForProtein,
+// const { externalToInternalMap } = proteinIDMap;
 
 const router = new express.Router();
 
@@ -20,30 +20,30 @@ const log = bunyan.createLogger({
     //TODO server / host / process ..
 });
 
-router.param('protein_id', (req, res, next, proteinId) => {
-    const id = parseInt(proteinId, 10);
-    log.debug({ proteinId, id });
+// router.param('protein_id', (req, res, next, proteinId) => {
+//     const id = parseInt(proteinId, 10);
+//     log.debug({ proteinId, id });
 
-    //TODO support external ids!
-    if (!(id in speciesForProtein) || !speciesForProtein[id]) {
-        res.status(404);
-        res.set('Content-type', 'application/json');
-        res.render('error', { message: `Unknown protein: ${proteinId}` });
-        return;
-    }
+//     //TODO support external ids!
+//     if (!(id in speciesForProtein) || !speciesForProtein[id]) {
+//         res.status(404);
+//         res.set('Content-type', 'application/json');
+//         res.render('error', { message: `Unknown protein: ${proteinId}` });
+//         return;
+//     }
 
-    req.protein_id = id;
-    next();
-});
+//     req.protein_id = id;
+//     next();
+// });
 
 function renderProtein(req, res) {
-    const speciesId = speciesForProtein[req.protein_id];
-    const protein = require(`../lib/proteins/${speciesId}`)[req.protein_id];
+    // const speciesId = speciesForProtein[req.protein_id];
+    const protein = require(`../lib/proteins/${req.species_id}`)[req.protein_id];
     const protein_name = req.protein_name;
     if (protein_name && protein_name !== protein.name) {
         res.status(404);    
     };
-    const abundances = speciesData[speciesId].datasets.map((datasetInfo) => {
+    const abundances = speciesData[req.species_id].datasets.map((datasetInfo) => {
         const dataset = require(`../lib/dataset/${datasetInfo.id}`);
         const abundance = dataset.abundances[req.protein_id];
         const ranking = new datasetLib.Ranking(dataset.info.num_abundances);
@@ -59,35 +59,38 @@ function renderProtein(req, res) {
     res.render('protein', { protein, abundances: abundancesJson });
 }
 
-router.get('/:protein_id', (req, res) => {
-    renderProtein(req, res);
-});
+// router.get('/:protein_id', (req, res) => {
+//     renderProtein(req, res);
+// });
 
 router.get('/uniprot/:ac', (req, res) => {
-    if (req.params.ac in uniprotIdsMap) {
-        req.protein_id = uniprotIdsMap[req.params.ac];
-        renderProtein(req, res);
-        return;
-    }
+    
+    const external_id = uniprotIdsMap[req.params.ac];
+    req.species_id = external_id.split('.')[0];
+    req.protein_id = external_id.split('.')[1];
+    renderProtein(req, res);
+    return;
+    
     res.status(404);
     res.set('Content-type', 'application/json');
     res.render('error', { message: `no protein in paxdb has this uniprot ac ${req.params.ac}` });
 });
 
 router.get('/string/:ac', (req, res) => {
-    if (req.params.ac in externalToInternalMap) {
-        req.protein_id = externalToInternalMap[req.params.ac];
-        renderProtein(req, res);
-        return;
-    }
-    res.status(404);
-    res.set('Content-type', 'application/json');
-    res.render('error', { message: `no protein in paxdb has this string id ${req.params.ac}` });
+    
+    req.species_id = req.params.ac.split('.')[0];
+    req.protein_id = req.params.ac.split('.')[1];
+    renderProtein(req, res);
+    return;
+    
+    // res.status(404);
+    // res.set('Content-type', 'application/json');
+    // res.render('error', { message: `no protein in paxdb has this string id ${req.params.ac}` });
 });
 
-router.get('/:protein_id/:protein_name', (req, res) => {
-    renderProtein(req, res);
-});
+// router.get('/:protein_id/:protein_name', (req, res) => {
+//     renderProtein(req, res);
+// });
 
 module.exports = router;
 //TODO

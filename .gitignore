@@ -115,4 +115,7 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 
-lib/
+lib/dataset
+lib/proteins/
+data/abundances/
+public/payload

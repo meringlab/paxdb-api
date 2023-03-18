@@ -68,12 +68,12 @@ router.param('dataset_id', (req, res, next, datasetId) => {
     next();
 });
 
-router.get('/:dataset_id/correlate/:dst_dataset_id', (req, res) => {
-    const minId = Math.min(req.dataset.info.id, parseInt(req.params.dst_dataset_id, 10));
-    const maxId = Math.max(req.dataset.info.id, parseInt(req.params.dst_dataset_id, 10));
-    const svgFile = `./public/images/scatter/${minId}_${maxId}.svg`;
-    plotter.sendScatter(svgFile, minId, maxId, res);
-});
+// router.get('/:dataset_id/correlate/:dst_dataset_id', (req, res) => {
+//     const minId = Math.min(req.dataset.info.id, parseInt(req.params.dst_dataset_id, 10));
+//     const maxId = Math.max(req.dataset.info.id, parseInt(req.params.dst_dataset_id, 10));
+//     const svgFile = `./public/images/scatter/${minId}_${maxId}.svg`;
+//     plotter.sendScatter(svgFile, minId, maxId, res);
+// });
 
 router.get('/:dataset_id/histogram', (req, res) => {
     let proteinId;
