@@ -67,7 +67,7 @@ router.get('/uniprot/:ac', (req, res) => {
     
     const external_id = uniprotIdsMap[req.params.ac];
     req.species_id = external_id.split('.')[0];
-    req.protein_id = external_id.split('.')[1];
+    req.protein_id = external_id.split('.').slice(1).join('.');
     renderProtein(req, res);
     return;
     
@@ -79,7 +79,7 @@ router.get('/uniprot/:ac', (req, res) => {
 router.get('/string/:ac', (req, res) => {
     
     req.species_id = req.params.ac.split('.')[0];
-    req.protein_id = req.params.ac.split('.')[1];
+    req.protein_id = req.params.ac.split('.').slice(1).join('.');
     renderProtein(req, res);
     return;
     

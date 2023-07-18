@@ -39,7 +39,7 @@ router.get('/', (req, res) => {
     
     const proteinsMap = require(`../lib/proteins/${speciesId}`);
     const proteins = ids.map((id) => {
-        const short_id = id.split('.')[1];
+        const short_id = id.split('.').slice(1).join('.');
         const protein = proteinsMap[short_id];
         const rec = { id: protein.id, externalId: protein.externalId, name: protein.name };
         rec.abundances = speciesData[speciesId].datasets.map((datasetInfo) => {

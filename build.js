@@ -1,5 +1,6 @@
 /**
  * Created by milans on 9/8/16.
+ * run on aquarius for SQL db
  */
 
 const PAYLOAD_VERSION = 23;
@@ -84,7 +85,7 @@ function loadProteins(cb, createProteinModules = false) {
       ` from paxdb5_0.proteins where species_id = ${speciesId}`;
     client.query(sql).then(res => {
       res.rows.forEach(function (r) {
-        proteins[r.protein_external_id.split('.')[1]] = { // need protein name for abundance
+        proteins[r.protein_external_id.split('.').slice(1).join('.')] = { // need protein name for abundance
           id: r.protein_id,
           externalId: r.protein_external_id,
           name: r.preferred_name,
@@ -93,7 +94,7 @@ function loadProteins(cb, createProteinModules = false) {
         };
         if (Object.prototype.hasOwnProperty.call(paxdbUniprotIdsMap, r.protein_external_id)) {
           const ac = paxdbUniprotIdsMap[r.protein_external_id];
-          proteins[r.protein_external_id.split('.')[1]].uniprotId = ac;
+          proteins[r.protein_external_id.split('.').slice(1).join('.')].uniprotId = ac;
           // externalToInternalMap[r.protein_external_id] = r.protein_id
           if (!Object.prototype.hasOwnProperty.call(uniprotPaxdbIdsMap, ac)) {
             uniprotPaxdbIdsMap[ac] = r.protein_external_id;
@@ -188,12 +189,12 @@ function loadDatasetInfo(cb) {
         var rec = line.split('\t');
         if (rec.length > 1) {
           if (!dataset.integrated) {
-            proteinsCovered[species].add(rec[1].split('.')[1]); // need protein name for abundance
+            proteinsCovered[species].add(rec[1].split('.').slice(1).join('.')); // need protein name for abundance
           }
-          abundances[rec[1].split('.')[1]] = parseFloat(rec[2]); // need protein name for abundance
+          abundances[rec[1].split('.').slice(1).join('.')] = parseFloat(rec[2]); // need protein name for abundance
         }
         if (rec.length == 4) {
-          peptideCounts[rec[1].split('.')[1]] = parseInt(rec[3], 10); // need protein name for abundance
+          peptideCounts[rec[1].split('.').slice(1).join('.')] = parseInt(rec[3], 10); // need protein name for abundance
         }
       } else {
         switch (line.split(':')[0].trim()) {
@@ -287,7 +288,7 @@ function buildSpecies() {
                 sum += d.coverage;
               }
             });
-            s.average_coverage = sum / numDatasets; //round?
+            s.average_coverage = Math.round(sum / numDatasets); //round?
           }
         }
 
